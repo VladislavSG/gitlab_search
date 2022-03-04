@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gitlab Search</title>
+    <link th:href="@{/styles/search.css}" rel="stylesheet">
+
+    <link th:rel="stylesheet" th:href="@{assets/bootstrap-select-1.13.18/css/bootstrap-select.css}"/>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+</head>
+<body>
+<div class="header">
+    <h1 class="search-title">Enhanced Gitlab Search</h1>
+</div>
+
+<div class="main">
+    <form class="search-parameters"
+          action="#"
+          th:action="@{/search}"
+          th:object="${request}"
+          th:method="post">
+        <div class="main-search-block">
+            <div>
+                <label for="search-string">What are you searching for?</label>
+                <div class="input-and-search input-group-append">
+                    <input type="text"
+                           id="search-string"
+                           class="form-control input"
+                           placeholder="Search for projects, issues, etc."
+                           aria-describedby="button-addon2"
+                           th:field="*{searchString}"
+                           required>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary"
+                                type="submit"
+                                id="button-addon2"
+                        >Search
+                        </button>
+                    </div>
+                </div>
+                <input class="checkbox-input"
+                       id="regexp-checkbox"
+                       type="checkbox"
+                       th:field="*{useRegExp}">
+                <label for="regexp-checkbox">
+                    Use RegExp?
+                </label>
+            </div>
+        </div>
+        <div class="selectors">
+            <div class="select-block">
+                <label for="groupId">Group</label>
+
+                <select name="groupId"
+                        id="groupId"
+                        class="form-control selectpicker select">
+                    <option th:each="item: ${groupList}"
+                            th:text="${item.name}"
+                            th:value="${item.id}"
+                    >[group name]
+                    </option>
+                </select>
+
+            </div>
+            <div class="select-block">
+                <label for="groupTypeId">Group Type</label>
+                <select name="groupTypeId"
+                        id="groupTypeId"
+                        class="form-control selectpicker select">
+                    <option th:each="item: ${groupTypeList}"
+                            th:text="${item.name}"
+                            th:value="${item.id}"
+                    >[group type name]
+                    </option>
+                </select>
+            </div>
+            <div class="select-block">
+                <label for="repositoryId">Repository</label>
+                <select name="repositoryId"
+                        id="repositoryId"
+                        class="form-control selectpicker select"
+                        data-selected-text-format="count">
+                    <option th:each="item: ${repositoryList}"
+                            th:text="${item.name}"
+                            th:value="${item.id}"
+                    >[repository name]
+                    </option>
+                </select>
+            </div>
+            <div class="select-block form-group">
+                <label for="branches">Branches</label>
+
+                <select class="form-control selectpicker select"
+                        name="branches"
+                        id="branches"
+                        multiple
+                        data-selected-text-format="count">
+
+                    <option th:each="item : ${branchList}"
+                            th:value="${item.id}"
+                            th:text="${item.name}"
+                            th:selected="${true}"
+                    ></option>
+
+                </select>
+
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/bootstrap-select-1.13.18/js/bootstrap-select.js}"></script>
+
+</body>
+</html>

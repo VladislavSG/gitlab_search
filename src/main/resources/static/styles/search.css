@@ -1,0 +1,97 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+}
+
+.header {
+    position: fixed;
+    right: 10px;
+    left: 10px;
+    top: 0;
+    padding-left: 20px;
+    height: 60px;
+    background-color: white;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.search-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #303030;
+    white-space: nowrap;
+    margin-top: 15px;
+}
+
+.main {
+    padding-top: 100px;
+    width: 80%;
+    min-width: 400px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.input-and-search{
+    display: grid;
+    grid-template-columns: 8fr 1fr;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.main-search-block {
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.search-button {
+    color: #1f75cb;
+}
+
+.search-button:hover {
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px #1068bf;
+}
+
+.selectors {
+    width: 100%;
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.select {
+    margin-top: 10px;
+    height: 30px;
+    width: 100%;
+}
+
+.select-block {
+    width: 95%;
+}
+
+.selectBox {
+    position: relative;
+}
+
+.selectBox select {
+    width: 100%;
+    font-weight: bold;
+}
+
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#checkboxes {
+    display: none;
+    border: 1px #dadada solid;
+}
+
+#checkboxes label {
+    display: block;
+}
