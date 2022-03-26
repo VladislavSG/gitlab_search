@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <link th:rel="stylesheet" th:href="@{assets/bootstrap-select-1.13.18/css/bootstrap-select.css}"/>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+
+    <style>
+        .main {
+            width: 700px;
+            margin: auto;
+
+            padding-top: 20px;
+        }
+
+        input {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+
+        h2{
+            margin-bottom: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="main container">
+    <h2>Create new user</h2>
+    <form name="form"
+          class="form-group"
+          th:action="@{/newuser/create}"
+          method="POST">
+        <label for="username">Username</label>
+        <input type="text"
+               name="uid"
+               value=""
+               placeholder="Username"
+               class="form-control"
+               required
+               id="username"/>
+        <label for="password">Password</label>
+        <input type="password"
+               name="password"
+               placeholder="Password"
+               class="form-control"
+               required
+               id="password"/>
+        <label for="firstname">First Name</label>
+        <input type="text"
+               name="firstname"
+               placeholder="First Name"
+               class="form-control"
+               required
+               id="firstname"/>
+        <label for="lastname">Last Name</label>
+        <input type="text"
+               name="lastname"
+               placeholder="Last Name"
+               class="form-control"
+               required
+               id="lastname"/>
+        <input type="submit"
+               id="login"
+               value="New User"
+               class="btn btn-primary"/>
+    </form>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/assets/bootstrap-select-1.13.18/js/bootstrap-select.js}"></script>
+
+</body>
+</html>

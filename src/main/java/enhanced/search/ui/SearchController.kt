@@ -15,9 +15,7 @@ class SearchController(
 ) {
 
     @GetMapping("/")
-    fun search(
-        model: Model
-    ): String {
+    fun search(model: Model): String {
         model.addAttribute("request", SearchRequest())
         model.addAttribute("groupList", searchService.getGroups())
         model.addAttribute("groupTypeList", searchService.getGroupTypes())
@@ -27,7 +25,7 @@ class SearchController(
         return "search-main"
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     fun search(
         @ModelAttribute request: SearchRequest,
         model: Model

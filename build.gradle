@@ -18,8 +18,18 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-ldap'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect"
+
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation('org.springframework.ldap:spring-ldap-core')
+    implementation('org.springframework.security:spring-security-ldap')
+
 
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
     implementation group: 'org.webjars', name: 'bootstrap', version: '4.0.0-2'

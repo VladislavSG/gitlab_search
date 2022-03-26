@@ -8,18 +8,24 @@ body {
     left: 10px;
     top: 0;
     padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
     height: 60px;
     background-color: white;
     border-bottom: 1px solid #dbdbdb;
+    display: grid;
+    justify-content: space-between;
 }
 
 .search-title {
     font-size: 24px;
     font-weight: 600;
     color: #303030;
+    margin-top: 10px;
     white-space: nowrap;
-    margin-top: 15px;
+    width: max-content;
 }
+
 
 .main {
     padding-top: 100px;
