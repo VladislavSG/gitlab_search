@@ -25,7 +25,7 @@ class SearchController(
         return "search-main"
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     fun search(
         @ModelAttribute request: SearchRequest,
         model: Model
