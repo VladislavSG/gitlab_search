@@ -19,7 +19,8 @@ class UserService(
         uid: String,
         firstName: String,
         lastName: String,
-        password: String
+        password: String,
+        token: String
     ) {
         val dn: Name = LdapNameBuilder
             .newInstance()
@@ -32,6 +33,7 @@ class UserService(
                 setAttributeValues("objectClass", arrayOf("top", "person", "inetOrgPerson", "organizationalPerson"))
                 setAttributeValue("cn", firstName)
                 setAttributeValue("sn", lastName)
+                setAttributeValue("description", token)
                 setAttributeValue("userPassword", passwordEncoder.encode(password))
             }
         )

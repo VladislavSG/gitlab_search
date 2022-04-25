@@ -35,6 +35,10 @@ dependencies {
     implementation group: 'org.webjars', name: 'bootstrap', version: '4.0.0-2'
     implementation "org.webjars:webjars-locator:0.30"
 
+    // https://mvnrepository.com/artifact/org.gitlab4j/gitlab4j-api
+    implementation group: 'org.gitlab4j', name: 'gitlab4j-api', version: '5.0.1'
+
+
 }
 
 

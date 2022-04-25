@@ -16,4 +16,5 @@ data class User(
     @Attribute(name = "password") var password: String? = null,
     @Attribute(name = "cn") var firstName: String? = null,
     @Attribute(name = "sn") var secondName: String? = null,
+    @Attribute(name = "description") var accessToken: String? = null
 )

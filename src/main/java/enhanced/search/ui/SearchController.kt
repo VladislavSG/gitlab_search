@@ -1,6 +1,6 @@
 package enhanced.search.ui
 
-import enhanced.search.dto.SearchRequest
+import enhanced.search.dto.*
 import enhanced.search.service.SearchService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -16,10 +16,11 @@ class SearchController(
 
     @GetMapping("/")
     fun search(model: Model): String {
+
         model.addAttribute("request", SearchRequest())
-        model.addAttribute("groupList", searchService.getGroups())
-        model.addAttribute("groupTypeList", searchService.getGroupTypes())
-        model.addAttribute("repositoryList", searchService.getRepositories())
+        model.addAttribute("groupList", listOf(ANY_GROUP).plus(searchService.getGroups()))
+        model.addAttribute("groupTypeList", listOf(ANY_GROUP_TYPE).plus(searchService.getGroupTypes()))
+        model.addAttribute("repositoryList", listOf(ANY_REPOSITORY).plus(searchService.getRepositories()))
         model.addAttribute("branchList", searchService.getBranches())
 
         return "search-main"
@@ -30,6 +31,7 @@ class SearchController(
         @ModelAttribute request: SearchRequest,
         model: Model
     ): String {
+        println(request)
         model.addAttribute("request", request)
         println(request.toString())
         return "redirect:/"

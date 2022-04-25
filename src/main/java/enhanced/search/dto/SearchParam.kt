@@ -21,6 +21,11 @@ data class Repository(
 ) : SearchParam(_id, _name)
 
 data class Branch(
-    private var _id: Long = -1,
-    private var _name: String = "Any",
+    private var _id: Long,
+    private var _name: String,
 ) : SearchParam(_id, _name)
+
+val ANY_GROUP = Group(-1, "Any Group")
+val ANY_GROUP_TYPE = GroupType(-1, "Any Group Type")
+val ANY_REPOSITORY = Repository(-1, "Any Repository")
+val ANY_BRANCH = Branch(-1, "Any Branch")

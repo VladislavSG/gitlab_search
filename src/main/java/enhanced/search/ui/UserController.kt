@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.yaml.snakeyaml.tokens.AliasToken
 import java.security.Principal
 
 @Controller
@@ -40,8 +41,9 @@ class UserController(
         @RequestParam("password") password: String,
         @RequestParam("firstname") firstname: String,
         @RequestParam("lastname") lastname: String,
+        @RequestParam("token") token: String
     ): String {
-        userService.create(uid, firstname, lastname, password)
+        userService.create(uid, firstname, lastname, password, token)
         return "redirect:/"
     }
 

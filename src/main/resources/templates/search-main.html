@@ -29,32 +29,25 @@
           th:object="${request}"
           th:method="post">
         <div class="main-search-block">
-            <div>
-                <label for="search-string">What are you searching for?</label>
-                <div class="input-and-search input-group-append">
-                    <input type="text"
-                           id="search-string"
-                           class="form-control input"
-                           placeholder="Search for projects, issues, etc."
-                           aria-describedby="button-addon2"
-                           th:field="*{searchString}"
-                           required>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary"
-                                type="submit"
-                                id="button-addon2">
-                            Search
-                        </button>
-                    </div>
+
+            <label for="search-string">What are you searching for?</label>
+            <div class="input-and-search input-group-append">
+                <input type="text"
+                       id="search-string"
+                       class="form-control input"
+                       placeholder="Search for projects, issues, etc."
+                       aria-describedby="button-addon2"
+                       th:field="*{searchString}"
+                       required>
+                <div class="input-group-append">
+                    <button class="btn btn-primary"
+                            type="submit"
+                            id="button-addon2">
+                        Search
+                    </button>
                 </div>
-                <input class="checkbox-input"
-                       id="regexp-checkbox"
-                       type="checkbox"
-                       th:field="*{useRegExp}">
-                <label for="regexp-checkbox">
-                    Use RegExp?
-                </label>
             </div>
+
         </div>
         <div class="selectors">
             <div class="select-block">
@@ -112,7 +105,14 @@
                     ></option>
 
                 </select>
-
+            </div>
+            <div class="select-block">
+                <label for="branchMask">Branch Mask</label>
+                <input type="text"
+                       id="branchMask"
+                       class="form-control selectpicker select"
+                       placeholder="Branch Mask"
+                       th:field="*{branchMask}">
             </div>
         </div>
     </form>
