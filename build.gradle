@@ -7,7 +7,7 @@ plugins {
 
 group = 'enhanced.search'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = "16"
 
 
 repositories {
@@ -35,10 +35,7 @@ dependencies {
     implementation group: 'org.webjars', name: 'bootstrap', version: '4.0.0-2'
     implementation "org.webjars:webjars-locator:0.30"
 
-    // https://mvnrepository.com/artifact/org.gitlab4j/gitlab4j-api
     implementation group: 'org.gitlab4j', name: 'gitlab4j-api', version: '5.0.1'
-
-
 }
 
 
@@ -55,3 +52,4 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+targetCompatibility = JavaVersion.VERSION_16
