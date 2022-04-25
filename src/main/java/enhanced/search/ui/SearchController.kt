@@ -28,13 +28,22 @@ class SearchController(
 
     @PostMapping("/search")
     fun search(
-        @ModelAttribute request: SearchRequest,
+        @ModelAttribute gotRequest: SearchRequest,
         model: Model
     ): String {
-        println(request)
-        model.addAttribute("request", request)
-        println(request.toString())
-        return "redirect:/"
+        model.addAttribute("gotRequest", gotRequest)
+
+        model.addAttribute("request", SearchRequest())
+        model.addAttribute("groupList", listOf(ANY_GROUP).plus(searchService.getGroups()))
+        model.addAttribute("groupTypeList", listOf(ANY_GROUP_TYPE).plus(searchService.getGroupTypes()))
+        model.addAttribute("repositoryList", listOf(ANY_REPOSITORY).plus(searchService.getRepositories()))
+        model.addAttribute("branchList", searchService.getBranches())
+
+        println(gotRequest)
+        model.addAttribute("request", gotRequest)
+        println(gotRequest.toString())
+
+        return "search-results"
     }
 
 }
