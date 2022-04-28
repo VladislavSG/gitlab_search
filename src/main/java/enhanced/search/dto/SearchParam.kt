@@ -15,7 +15,7 @@ data class GroupType(
     private var _name: String,
 ) : SearchParam(_id, _name)
 
-data class Repository(
+data class Project(
     private var _id: Long,
     private var _name: String,
 ) : SearchParam(_id, _name)
@@ -27,5 +27,5 @@ data class Branch(
 
 val ANY_GROUP = Group(-1, "Any Group")
 val ANY_GROUP_TYPE = GroupType(-1, "Any Group Type")
-val ANY_REPOSITORY = Repository(-1, "Any Repository")
+val ANY_PROJECT = Project(-1, "Any Project")
 val ANY_BRANCH = Branch(-1, "Any Branch")

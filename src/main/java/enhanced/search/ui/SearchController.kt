@@ -20,7 +20,7 @@ class SearchController(
         model.addAttribute("request", SearchRequest())
         model.addAttribute("groupList", listOf(ANY_GROUP).plus(searchService.getGroups()))
         model.addAttribute("groupTypeList", listOf(ANY_GROUP_TYPE).plus(searchService.getGroupTypes()))
-        model.addAttribute("repositoryList", listOf(ANY_REPOSITORY).plus(searchService.getRepositories()))
+        model.addAttribute("repositoryList", listOf(ANY_PROJECT).plus(searchService.getProjects()))
         model.addAttribute("branchList", searchService.getBranches())
 
         return "search-main"
@@ -36,7 +36,7 @@ class SearchController(
         model.addAttribute("request", SearchRequest())
         model.addAttribute("groupList", listOf(ANY_GROUP).plus(searchService.getGroups()))
         model.addAttribute("groupTypeList", listOf(ANY_GROUP_TYPE).plus(searchService.getGroupTypes()))
-        model.addAttribute("repositoryList", listOf(ANY_REPOSITORY).plus(searchService.getRepositories()))
+        model.addAttribute("repositoryList", listOf(ANY_PROJECT).plus(searchService.getProjects()))
         model.addAttribute("branchList", searchService.getBranches())
 
         println(gotRequest)
