@@ -7,7 +7,9 @@ import org.gitlab4j.api.GitLabApiException;
 import org.glassfish.jersey.internal.guava.Predicates;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -67,11 +69,15 @@ public class SearchService {
     }
 
     public List<Project> getProjects(final SearchRequest request) throws GitLabApiException {
-        return getGroupsStream(request)
-                .map(org.gitlab4j.api.models.Group::getProjects)
-                .flatMap(List::stream)
-                .map(p -> new Project(p.getId(), p.getName()))
-                .toList();
+        List<org.gitlab4j.api.models.Group> groups = getGroupsStream(request).toList();
+        List<Project> projects = new ArrayList<>();
+        for (org.gitlab4j.api.models.Group g : groups) {
+            gitLabApi.getGroupApi()
+                    .getProjectsStream(g)
+                    .map(p -> new Project(p.getId(), p.getName()))
+                    .forEach(projects::add);
+        }
+        return projects;
     }
 
     public List<Branch> getBranches() {
