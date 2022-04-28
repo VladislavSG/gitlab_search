@@ -20,10 +20,14 @@ public class GroupTypes {
             for (String line : Files.readAllLines(path)) {
                 String[] tokens = line.split(":");
                 if (tokens.length >= 2) {
-                    Long key = Long.parseLong(tokens[0].trim());
-                    String type = tokens[1].trim();
-                    id2type.put(key, type);
-                    types.add(type);
+                    try {
+                        Long key = Long.parseLong(tokens[0].trim());
+                        String type = tokens[1].trim();
+                        id2type.put(key, type);
+                        types.add(type);
+                    } catch (NumberFormatException ignored) {
+                        //ignore line with invalid id
+                    }
                 }
             }
         } catch (IOException ignored) {
