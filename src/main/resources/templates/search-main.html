@@ -51,24 +51,11 @@
         </div>
         <div class="selectors">
             <div class="select-block">
-                <label for="groupId">Group</label>
-
-                <select name="groupId"
-                        id="groupId"
-                        class="form-control selectpicker select">
-                    <option th:each="item: ${groupList}"
-                            th:text="${item.name}"
-                            th:value="${item.id}"
-                    >[group name]
-                    </option>
-                </select>
-
-            </div>
-            <div class="select-block">
                 <label for="groupTypeId">Group Type</label>
                 <select name="groupTypeId"
                         id="groupTypeId"
-                        class="form-control selectpicker select">
+                        class="selectpicker select"
+                        onchange="changeGroupType()">
                     <option th:each="item: ${groupTypeList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
@@ -77,14 +64,31 @@
                 </select>
             </div>
             <div class="select-block">
+                <label for="groupId">Group</label>
+                <select name="groupId"
+                        id="groupId"
+                        class="selectpicker select"
+                        onchange="changeGroup()">
+                    <option th:each="item: ${groupList}"
+                            th:text="${item.name}"
+                            th:value="${item.id}"
+                            th:parentid="${item.parentId}"
+                    >[group name]
+                    </option>
+                </select>
+
+            </div>
+            <div class="select-block">
                 <label for="repositoryId">Repository</label>
                 <select name="repositoryId"
                         id="repositoryId"
-                        class="form-control selectpicker select"
-                        data-selected-text-format="count">
+                        class="selectpicker select"
+                        data-selected-text-format="count"
+                        onchange="changeRepository()">
                     <option th:each="item: ${repositoryList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
+                            th:parentid="${item.parentId}"
                     >[repository name]
                     </option>
                 </select>
@@ -92,7 +96,7 @@
             <div class="select-block form-group">
                 <label for="branches">Branches</label>
 
-                <select class="form-control selectpicker select"
+                <select class="selectpicker select"
                         name="branches"
                         id="branches"
                         multiple
@@ -102,6 +106,7 @@
                             th:value="${item.id}"
                             th:text="${item.name}"
                             th:selected="${true}"
+                            th:parentid="${item.parentId}"
                     ></option>
 
                 </select>
@@ -110,7 +115,7 @@
                 <label for="branchMask">Branch Mask</label>
                 <input type="text"
                        id="branchMask"
-                       class="form-control selectpicker select"
+                       class="selectpicker select"
                        placeholder="Branch Mask"
                        th:field="*{branchMask}">
             </div>
@@ -123,6 +128,7 @@
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 <script th:src="@{/assets/bootstrap-select-1.13.18/js/bootstrap-select.js}"></script>
+<script th:src="@{/scripts/script.js}"></script>
 
 </body>
 </html>
