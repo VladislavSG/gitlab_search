@@ -5,7 +5,7 @@ data class SearchRequest(
     var searchString: String = "",
     var groupId: Long? = null,
     var groupType: String? = null,
-    var repositoryId: Long? = null,
+    var projectId: Long? = null,
     var branches: Set<Long> = setOf(),
     var branchMask: String = ""
 )
