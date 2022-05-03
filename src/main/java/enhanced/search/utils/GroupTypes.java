@@ -8,11 +8,11 @@ import java.util.*;
 public class GroupTypes {
     private static final Path path = Path.of("./group_types.txt");
     public final Map<Long, String> id2type;
-    public final Set<String> types;
+    public final List<String> types;
 
     public GroupTypes() {
         id2type = new HashMap<>();
-        types = new HashSet<>();
+        types = new ArrayList<>();
         if (!Files.exists(path)) {
             return;
         }
