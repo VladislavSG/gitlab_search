@@ -1,6 +1,7 @@
 package enhanced.search.utils;
 
 import enhanced.search.dto.GroupType;
+import org.gitlab4j.api.models.Group;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,5 +47,10 @@ public class GroupTypes {
         } catch (IOException ignored) {
             //TODO: нормальную обработку исключений
         }
+    }
+
+    public Long group2TypeId(Group g) {
+        GroupType gt = id2type.get(g.getId());
+        return gt == null? null : gt.getId();
     }
 }

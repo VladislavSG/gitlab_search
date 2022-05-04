@@ -22,7 +22,6 @@ class SearchController(
         model.addAttribute("groupList", listOf(ANY_GROUP).plus(gitlabGetService.getGroups()))
         model.addAttribute("groupTypeList", listOf(ANY_GROUP_TYPE).plus(gitlabGetService.getGroupTypes()))
         model.addAttribute("repositoryList", listOf(ANY_PROJECT).plus(gitlabGetService.getProjects()))
-        model.addAttribute("branchList", listOf<Branch>())
         model.addAttribute("branchList", gitlabGetService.getBranches())
 
         return "search-main"
@@ -41,7 +40,6 @@ class SearchController(
         model.addAttribute("groupList", listOf(ANY_GROUP).plus(gitlabGetService.getGroups()))
         model.addAttribute("groupTypeList", listOf(ANY_GROUP_TYPE).plus(gitlabGetService.getGroupTypes()))
         model.addAttribute("repositoryList", listOf(ANY_PROJECT).plus(gitlabGetService.getProjects()))
-        model.addAttribute("branchList", listOf<Branch>())
         model.addAttribute("branchList", gitlabGetService.getBranches())
 
         return "search-results"

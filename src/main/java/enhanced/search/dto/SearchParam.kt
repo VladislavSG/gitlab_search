@@ -9,7 +9,7 @@ data class GroupType(
 data class Group(
     var id: Long,
     var name: String,
-    var parentId: Long
+    var parentId: Long?
 )
 
 data class Project(

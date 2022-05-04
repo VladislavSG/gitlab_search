@@ -49,7 +49,7 @@ public class GitlabGetService {
 
     public List<Group> getGroups(final SearchRequest request) throws GitLabApiException {
         return getGroupsStream(request)
-                .map(g -> new Group(g.getId(), g.getName(), group2TypeID.apply(g)))
+                .map(g -> new Group(g.getId(), g.getName(), gt.group2TypeId(g)))
                 .toList();
     }
 
