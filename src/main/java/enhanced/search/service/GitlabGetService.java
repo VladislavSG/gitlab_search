@@ -9,6 +9,7 @@ import org.glassfish.jersey.internal.guava.Predicates;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -16,6 +17,8 @@ import java.util.stream.Stream;
 public class GitlabGetService {
     private final GitLabApi gitLabApi;
     private final GroupTypes gt = new GroupTypes();
+    private final Function<org.gitlab4j.api.models.Group, Long> group2TypeID = g ->
+            gt.id2type.get(g.getId()).getId();
 
     public GitlabGetService() throws GitLabApiException {
         this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
@@ -34,8 +37,9 @@ public class GitlabGetService {
                 .getGroupApi()
                 .getGroupsStream();
         if (request != null && request.getGroupType() != null) {
-            final Predicate<String> predicateType = Predicates.equalTo(request.getGroupType());
-            final Predicate<Long> predicateID = Predicates.compose(predicateType, gt.id2type::get);
+            final Predicate<Long> predicateID = id -> request
+                    .getGroupType()
+                    .equals(gt.id2type.get(id).getName());
             final Predicate<org.gitlab4j.api.models.Group> predicateGroup =
                     Predicates.compose(predicateID, org.gitlab4j.api.models.Group::getId);
             groups = groups.filter(predicateGroup);
@@ -45,7 +49,7 @@ public class GitlabGetService {
 
     public List<Group> getGroups(final SearchRequest request) throws GitLabApiException {
         return getGroupsStream(request)
-                .map(g -> new Group(g.getId(), g.getName(), -1))
+                .map(g -> new Group(g.getId(), g.getName(), group2TypeID.apply(g)))
                 .toList();
     }
 
