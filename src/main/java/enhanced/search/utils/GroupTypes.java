@@ -9,7 +9,7 @@ import java.util.*;
 
 public class GroupTypes {
     private static final Path path = Path.of("./group_types.txt"); //TODO: add path to config
-    public final Map<Long, String> id2type;
+    public final Map<Long, GroupType> id2type;
     public final List<GroupType> types;
 
     public GroupTypes() {
@@ -21,16 +21,23 @@ public class GroupTypes {
             id2type = new HashMap<>();
             types = new ArrayList<>();
         }
-        Set<String> types_set = new HashSet<>();
+
         try {
             for (String line : Files.readAllLines(path)) {
                 String[] tokens = line.split(":");
                 if (tokens.length >= 2) {
                     try {
-                        Long key = Long.parseLong(tokens[0].trim());
+                        long key = Long.parseLong(tokens[0].trim());
                         String type = tokens[1].trim();
-                        id2type.put(key, type);
-                        types_set.add(type);
+                        GroupType gt;
+                        int types_size = types.size();
+                        if (key < types_size) {
+                            gt = types.get(Math.toIntExact(key));
+                        } else {
+                            gt = new GroupType(types_size, type);
+                            types.add(gt);
+                        }
+                        id2type.put(key, gt);
                     } catch (NumberFormatException ignored) {
                         //ignore line with invalid id
                     }
@@ -38,10 +45,6 @@ public class GroupTypes {
             }
         } catch (IOException ignored) {
             //TODO: нормальную обработку исключений
-        }
-        int i = 0;
-        for (String t : types_set) {
-            types.add(new GroupType(i++, t));
         }
     }
 }
