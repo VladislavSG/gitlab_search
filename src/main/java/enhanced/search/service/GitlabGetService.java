@@ -17,8 +17,6 @@ import java.util.stream.Stream;
 public class GitlabGetService {
     private final GitLabApi gitLabApi;
     private final GroupTypes gt = new GroupTypes();
-    private final Function<org.gitlab4j.api.models.Group, Long> group2TypeID = g ->
-            gt.id2type.get(g.getId()).getId();
 
     public GitlabGetService() {
         this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
