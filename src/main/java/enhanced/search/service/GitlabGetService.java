@@ -88,7 +88,7 @@ public class GitlabGetService {
         for (Project p : getProjects()) {
             gitLabApi
                     .getRepositoryApi()
-                    .getBranchesStream(p)
+                    .getBranchesStream(p.getId())
                     .map(b -> new Branch(b.getName(), p.getId()))
                     .forEach(res::add);
         }
