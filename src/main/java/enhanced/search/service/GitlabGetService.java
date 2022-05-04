@@ -50,10 +50,7 @@ public class GitlabGetService {
     }
 
     public List<GroupType> getGroupTypes() {
-        return gt.types
-                .stream()
-                .map(t -> new GroupType(0, t))
-                .toList();
+        return gt.types;
     }
 
     public List<Project> getProjects() throws GitLabApiException {
