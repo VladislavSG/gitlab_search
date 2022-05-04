@@ -20,7 +20,7 @@ public class GitlabGetService {
     private final Function<org.gitlab4j.api.models.Group, Long> group2TypeID = g ->
             gt.id2type.get(g.getId()).getId();
 
-    public GitlabGetService() throws GitLabApiException {
+    public GitlabGetService() {
         this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
     }
 
@@ -71,7 +71,7 @@ public class GitlabGetService {
             );
         } else {
             groups = getGroupsStream(request).toList();
-        } ;
+        }
         List<Project> projects = new ArrayList<>();
         for (org.gitlab4j.api.models.Group g : groups) {
             gitLabApi.getGroupApi()
@@ -83,7 +83,17 @@ public class GitlabGetService {
         return projects;
     }
 
-
+    public List<Branch> getBranches() throws GitLabApiException {
+        List<Branch> res = new ArrayList<>();
+        for (Project p : getProjects()) {
+            gitLabApi
+                    .getRepositoryApi()
+                    .getBranchesStream(p)
+                    .map(b -> new Branch(b.getName(), p.getId()))
+                    .forEach(res::add);
+        }
+        return res;
+    }
 
     public List<Branch> getBranches(final SearchRequest request) throws GitLabApiException {
         Long projectId = request.getProjectId();
