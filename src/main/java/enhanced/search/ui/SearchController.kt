@@ -2,6 +2,7 @@ package enhanced.search.ui
 
 import enhanced.search.dto.*
 import enhanced.search.service.GitlabGetService
+import enhanced.search.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping
 
 @Controller
 class SearchController(
-    @Autowired private val gitlabGetService: GitlabGetService
+    @Autowired private val gitlabGetService: GitlabGetService,
+    @Autowired private val userService: UserService
 ) {
 
     @GetMapping("/")
@@ -30,6 +32,8 @@ class SearchController(
         @ModelAttribute gotRequest: SearchRequest,
         model: Model
     ): String {
+        println(gotRequest.toString())
+
         model.addAttribute("gotRequest", gotRequest)
 
         model.addAttribute("request", SearchRequest())

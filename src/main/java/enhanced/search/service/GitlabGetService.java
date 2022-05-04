@@ -45,7 +45,7 @@ public class GitlabGetService {
 
     public List<Group> getGroups(final SearchRequest request) throws GitLabApiException {
         return getGroupsStream(request)
-                .map(g -> new Group(g.getId(), g.getName()))
+                .map(g -> new Group(g.getId(), g.getName(), -1))
                 .toList();
     }
 
@@ -75,7 +75,7 @@ public class GitlabGetService {
         for (org.gitlab4j.api.models.Group g : groups) {
             gitLabApi.getGroupApi()
                     .getProjectsStream(g)
-                    .map(p -> new Project(p.getId(), p.getName()))
+                    .map(p -> new Project(p.getId(), p.getName(), -1))
                     .forEach(projects::add);
         }
         projects.sort(Comparator.comparing(Project::getName));
@@ -90,7 +90,7 @@ public class GitlabGetService {
             return gitLabApi
                     .getRepositoryApi()
                     .getBranchesStream(projectId)
-                    .map(b -> new Branch(0, b.getName()))
+                    .map(b -> new Branch(0, b.getName(), -1))
                     .toList();
         } else {
             return Collections.emptyList();

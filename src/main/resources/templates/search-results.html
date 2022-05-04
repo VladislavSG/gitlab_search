@@ -8,7 +8,7 @@
     <link th:rel="stylesheet" th:href="@{assets/bootstrap-select-1.13.18/css/bootstrap-select.css}"/>
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 </head>
-<body>
+<body onload="changeGroupType()">
 <div class="header row">
     <h1 class="search-title">Enhanced Gitlab Search</h1>
     <form
@@ -34,11 +34,11 @@
             <div class="input-and-search input-group-append">
                 <input type="text"
                        id="search-string"
+                       name="searchString"
                        class="form-control input"
                        placeholder="Search for projects, issues, etc."
                        aria-describedby="button-addon2"
                        th:value="${gotRequest.searchString}"
-                       th:field="*{searchString}"
                        required>
                 <div class="input-group-append">
                     <button class="btn btn-primary"
@@ -52,25 +52,11 @@
         </div>
         <div class="selectors">
             <div class="select-block">
-                <label for="groupId">Group</label>
-
-                <select name="groupId"
-                        id="groupId"
-                        class="form-control selectpicker select">
-                    <option th:each="item: ${groupList}"
-                            th:text="${item.name}"
-                            th:value="${item.id}"
-                            th:selected="${item.id == gotRequest.getGroupId()}"
-                    >[group name]
-                    </option>
-                </select>
-
-            </div>
-            <div class="select-block">
                 <label for="groupTypeId">Group Type</label>
                 <select name="groupTypeId"
                         id="groupTypeId"
-                        class="form-control selectpicker select">
+                        class="selectpicker select"
+                        onchange="changeGroupType()">
                     <option th:each="item: ${groupTypeList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
@@ -80,14 +66,33 @@
                 </select>
             </div>
             <div class="select-block">
+                <label for="groupId">Group</label>
+
+                <select name="groupId"
+                        id="groupId"
+                        class="selectpicker select"
+                        onchange="changeGroup()">
+                    <option th:each="item: ${groupList}"
+                            th:text="${item.name}"
+                            th:value="${item.id}"
+                            th:parentid="${item.parentId}"
+                            th:selected="${item.id == gotRequest.getGroupId()}"
+                    >[group name]
+                    </option>
+                </select>
+
+            </div>
+            <div class="select-block">
                 <label for="repositoryId">Repository</label>
                 <select name="repositoryId"
                         id="repositoryId"
-                        class="form-control selectpicker select"
-                        data-selected-text-format="count">
+                        class="selectpicker select"
+                        data-selected-text-format="count"
+                        onchange="changeRepository()">
                     <option th:each="item: ${repositoryList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
+                            th:parentid="${item.parentId}"
                             th:selected="${item.id == gotRequest.getRepositoryId()}"
                     >[repository name]
                     </option>
@@ -106,6 +111,7 @@
                             th:value="${item.id}"
                             th:text="${item.name}"
                             th:selected="${gotRequest.branches.contains(item.id)}"
+                            th:parentid="${item.parentId}"
                     ></option>
 
                 </select>
@@ -114,11 +120,10 @@
                 <label for="branchMask">Branch Mask</label>
                 <input type="text"
                        id="branchMask"
+                       name="branchMask"
                        class="form-control selectpicker select"
                        placeholder="Branch Mask"
-                       th:field="*{branchMask}"
-                       th:value="${gotRequest.branchMask}"
-                >
+                       th:value="${gotRequest.branchMask}">
             </div>
         </div>
     </form>
@@ -129,6 +134,7 @@
 <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 <script th:src="@{/assets/bootstrap-select-1.13.18/js/bootstrap-select.js}"></script>
+<script th:src="@{/scripts/script.js}"></script>
 
 </body>
 </html>
