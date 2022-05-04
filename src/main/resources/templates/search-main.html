@@ -103,7 +103,7 @@
                         data-selected-text-format="count">
 
                     <option th:each="item : ${branchList}"
-                            th:value="${item.id}"
+                            th:value="${item.name}"
                             th:text="${item.name}"
                             th:selected="${true}"
                             th:parentid="${item.parentId}"

@@ -1,7 +1,6 @@
 package enhanced.search.service;
 
 import enhanced.search.dto.SearchRequest;
-import enhanced.search.utils.GroupTypes;
 import org.gitlab4j.api.Constants;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
@@ -13,7 +12,6 @@ import java.util.List;
 
 public class SearchService {
     private final GitLabApi gitLabApi;
-    private final GroupTypes gt = new GroupTypes();
 
     public SearchService() {
         this(new GitLabApi("http://localhost", "rsQKVaBP1-RvtYGD4eTW"));

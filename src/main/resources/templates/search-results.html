@@ -60,7 +60,7 @@
                     <option th:each="item: ${groupTypeList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
-                            th:selected="${item.id == gotRequest.getGroupTypeId()}"
+                            th:selected="${item.id == gotRequest.getGroupType()}"
                     >[group type name]
                     </option>
                 </select>
@@ -93,7 +93,7 @@
                             th:text="${item.name}"
                             th:value="${item.id}"
                             th:parentid="${item.parentId}"
-                            th:selected="${item.id == gotRequest.getRepositoryId()}"
+                            th:selected="${item.id == gotRequest.getProjectId()}"
                     >[repository name]
                     </option>
                 </select>
@@ -108,9 +108,9 @@
                         data-selected-text-format="count">
 
                     <option th:each="item : ${branchList}"
-                            th:value="${item.id}"
+                            th:value="${item.name}"
                             th:text="${item.name}"
-                            th:selected="${gotRequest.branches.contains(item.id)}"
+                            th:selected="${gotRequest.branches.contains(item.name)}"
                             th:parentid="${item.parentId}"
                     ></option>
 
