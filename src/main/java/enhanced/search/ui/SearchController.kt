@@ -28,9 +28,9 @@ class SearchController(
         return "search-main"
     }
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     fun search(
-        @ModelAttribute gotRequest: SearchRequest,
+        @ModelAttribute gotRequest: SearchRequest = SearchRequest(),
         model: Model
     ): String {
         println(gotRequest.toString())

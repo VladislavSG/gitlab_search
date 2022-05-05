@@ -11,10 +11,18 @@ body {
     padding-right: 20px;
     padding-top: 10px;
     height: 60px;
+    min-width: 800px;
     background-color: white;
     border-bottom: 1px solid #dbdbdb;
     display: grid;
     justify-content: space-between;
+}
+
+.user-info{
+    padding-right: 10px;
+    display: grid;
+    justify-content: space-between;
+    gap: 15px;
 }
 
 .search-title {
@@ -29,10 +37,16 @@ body {
 
 .main {
     padding-top: 100px;
+    padding-bottom: 30px;
     width: 80%;
-    min-width: 400px;
+    min-width: 800px;
     max-width: 1200px;
     margin: auto;
+}
+
+.search-parameters{
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dbdbdb;
 }
 
 .input-and-search{
@@ -67,6 +81,7 @@ body {
 }
 
 .select {
+    min-width: 220px;
     margin-top: 10px;
     height: 30px;
     width: 100%;
@@ -76,28 +91,15 @@ body {
     width: 95%;
 }
 
-.selectBox {
-    position: relative;
+.search-response{
+    padding-top: 15px;
 }
 
-.selectBox select {
-    width: 100%;
-    font-weight: bold;
+.list-group-item{
+    height: 40px;
+    font-size: 12px;
 }
 
-.overSelect {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
-
-#checkboxes {
-    display: none;
-    border: 1px #dadada solid;
-}
-
-#checkboxes label {
-    display: block;
+.list-group-item:hover{
+    cursor: pointer;
 }

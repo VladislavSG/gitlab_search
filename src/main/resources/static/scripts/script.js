@@ -40,10 +40,10 @@ function changeGroup() {
 
         it.disabled = !groupList.has(parentId) && curId !== "-1";
     })
-    changeRepository()
+    changeProject()
 }
 
-function changeRepository() {
+function changeProject() {
     const repList = new Set()
     let repositoryId = "-1"
     if (repositorySelect.options[repositorySelect.selectedIndex].disabled) {
@@ -70,4 +70,32 @@ function changeRepository() {
     $('#groupId').selectpicker('refresh')
     $('#repositoryId').selectpicker('refresh')
     $('#branches').selectpicker('refresh')
+}
+
+function chooseProject() {
+
+}
+
+function chooseIssues() {
+
+}
+
+function chooseMergeRequests() {
+
+}
+
+function chooseMilestones() {
+
+}
+
+function chooseUsers() {
+
+}
+
+function chooseBlobs() {
+
+}
+
+function chooseCommits() {
+
 }

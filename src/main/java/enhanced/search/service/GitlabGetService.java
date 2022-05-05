@@ -18,8 +18,10 @@ public class GitlabGetService {
     private final GroupTypes gt = new GroupTypes();
 
     public GitlabGetService() throws GitLabApiException {
-        this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
+        this(new GitLabApi("http://localhost", "wYcZp6ui5uy3dKA5xw8N"));
     }
+    //wYcZp6ui5uy3dKA5xw8N
+    //UJ22AqyxpeyHycn_Kb6c
 
     public GitlabGetService(final GitLabApi gitLabApi) {
         this.gitLabApi = gitLabApi;
