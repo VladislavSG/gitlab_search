@@ -9,6 +9,7 @@ import org.glassfish.jersey.internal.guava.Predicates;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -17,8 +18,8 @@ public class GitlabGetService {
     private final GitLabApi gitLabApi;
     private final GroupTypes gt = new GroupTypes();
 
-    public GitlabGetService() throws GitLabApiException {
-        this(new GitLabApi("http://localhost", "wYcZp6ui5uy3dKA5xw8N"));
+    public GitlabGetService() {
+        this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
     }
     //wYcZp6ui5uy3dKA5xw8N
     //UJ22AqyxpeyHycn_Kb6c
@@ -36,8 +37,9 @@ public class GitlabGetService {
                 .getGroupApi()
                 .getGroupsStream();
         if (request != null && request.getGroupType() != null) {
-            final Predicate<String> predicateType = Predicates.equalTo(request.getGroupType());
-            final Predicate<Long> predicateID = Predicates.compose(predicateType, gt.id2type::get);
+            final Predicate<Long> predicateID = id -> request
+                    .getGroupType()
+                    .equals(gt.id2type.get(id).getName());
             final Predicate<org.gitlab4j.api.models.Group> predicateGroup =
                     Predicates.compose(predicateID, org.gitlab4j.api.models.Group::getId);
             groups = groups.filter(predicateGroup);
@@ -47,15 +49,12 @@ public class GitlabGetService {
 
     public List<Group> getGroups(final SearchRequest request) throws GitLabApiException {
         return getGroupsStream(request)
-                .map(g -> new Group(g.getId(), g.getName(), -1))
+                .map(g -> new Group(g.getId(), g.getName(), gt.group2TypeId(g)))
                 .toList();
     }
 
     public List<GroupType> getGroupTypes() {
-        return gt.types
-                .stream()
-                .map(t -> new GroupType(0, t))
-                .toList();
+        return gt.types;
     }
 
     public List<Project> getProjects() throws GitLabApiException {
@@ -72,7 +71,7 @@ public class GitlabGetService {
             );
         } else {
             groups = getGroupsStream(request).toList();
-        } ;
+        }
         List<Project> projects = new ArrayList<>();
         for (org.gitlab4j.api.models.Group g : groups) {
             gitLabApi.getGroupApi()
@@ -84,7 +83,17 @@ public class GitlabGetService {
         return projects;
     }
 
-
+    public List<Branch> getBranches() throws GitLabApiException {
+        List<Branch> res = new ArrayList<>();
+        for (Project p : getProjects()) {
+            gitLabApi
+                    .getRepositoryApi()
+                    .getBranchesStream(p.getId())
+                    .map(b -> new Branch(b.getName(), p.getId()))
+                    .forEach(res::add);
+        }
+        return res;
+    }
 
     public List<Branch> getBranches(final SearchRequest request) throws GitLabApiException {
         Long projectId = request.getProjectId();

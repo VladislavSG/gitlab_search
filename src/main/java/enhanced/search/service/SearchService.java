@@ -59,4 +59,9 @@ public class SearchService {
     public List<Milestone> searchMilestone(SearchRequest request) throws GitLabApiException {
         return (List<Milestone>) search(request, Constants.ProjectSearchScope.MILESTONES);
     }
+
+    @SuppressWarnings("unchecked")
+    public List<User> searchUsers(SearchRequest request) throws GitLabApiException {
+        return (List<User>) search(request, Constants.ProjectSearchScope.USERS);
+    }
 }
