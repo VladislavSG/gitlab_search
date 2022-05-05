@@ -11,15 +11,18 @@
 <body>
 <div class="header row">
     <h1 class="search-title">Enhanced Gitlab Search</h1>
-    <form
-            th:action="@{/logout}"
-            th:method="post">
-        <button id="logout_button"
-                class="btn btn-primary"
-                type="submit">
-            Logout
-        </button>
-    </form>
+    <div class="user-info row">
+        <span>FirstName LastName</span>
+        <form
+                th:action="@{/logout}"
+                th:method="post">
+            <button id="logout_button"
+                    class="btn btn-primary"
+                    type="submit">
+                Logout
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="main">
@@ -27,7 +30,7 @@
           action="#"
           th:action="@{/search}"
           th:object="${request}"
-          th:method="post">
+          th:method="get">
         <div class="main-search-block">
 
             <label for="search-string">What are you searching for?</label>
@@ -50,24 +53,26 @@
 
         </div>
         <div class="selectors">
-            <div class="select-block">
-                <label for="groupTypeId">Group Type</label>
-                <select name="groupTypeId"
-                        id="groupTypeId"
+            <div class="select-block form-group">
+                <label for="groupType">Group Type</label>
+                <select name="groupType"
+                        id="groupType"
                         class="selectpicker select"
+                        data-live-search="true"
                         onchange="changeGroupType()">
                     <option th:each="item: ${groupTypeList}"
                             th:text="${item.name}"
-                            th:value="${item.id}"
+                            th:value="${item.name}"
                     >[group type name]
                     </option>
                 </select>
             </div>
-            <div class="select-block">
+            <div class="select-block form-group">
                 <label for="groupId">Group</label>
                 <select name="groupId"
                         id="groupId"
                         class="selectpicker select"
+                        data-live-search="true"
                         onchange="changeGroup()">
                     <option th:each="item: ${groupList}"
                             th:text="${item.name}"
@@ -78,13 +83,14 @@
                 </select>
 
             </div>
-            <div class="select-block">
-                <label for="repositoryId">Repository</label>
-                <select name="repositoryId"
-                        id="repositoryId"
+            <div class="select-block form-group" >
+                <label for="projectId">Project</label>
+                <select name="projectId"
+                        id="projectId"
                         class="selectpicker select"
                         data-selected-text-format="count"
-                        onchange="changeRepository()">
+                        data-live-search="true"
+                        onchange="changeProject()">
                     <option th:each="item: ${repositoryList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
@@ -111,7 +117,7 @@
 
                 </select>
             </div>
-            <div class="select-block">
+            <div class="select-block form-group">
                 <label for="branchMask">Branch Mask</label>
                 <input type="text"
                        id="branchMask"

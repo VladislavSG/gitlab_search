@@ -21,6 +21,8 @@ public class GitlabGetService {
     public GitlabGetService() {
         this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
     }
+    //wYcZp6ui5uy3dKA5xw8N
+    //UJ22AqyxpeyHycn_Kb6c
 
     public GitlabGetService(final GitLabApi gitLabApi) {
         this.gitLabApi = gitLabApi;
