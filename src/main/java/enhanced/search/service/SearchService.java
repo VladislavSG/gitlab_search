@@ -51,8 +51,18 @@ public class SearchService {
     }
 
     @SuppressWarnings("unchecked")
+    public List<SearchBlob> searchWiki(SearchRequest request) throws GitLabApiException {
+        return (List<SearchBlob>) search(request, Constants.ProjectSearchScope.WIKI_BLOBS);
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Commit> searchCommits(SearchRequest request) throws GitLabApiException {
         return (List<Commit>) search(request, Constants.ProjectSearchScope.COMMITS);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Note> searchComments(SearchRequest request) throws GitLabApiException {
+        return (List<Note>) search(request, Constants.ProjectSearchScope.NOTES);
     }
 
     @SuppressWarnings("unchecked")
