@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body onload="changeGroupType()">
+<body onload="loadPage()">
 
 <div class="header row">
     <h1 class="search-title">Enhanced Gitlab Search</h1>
@@ -66,6 +66,7 @@
                             th:text="${item.name}"
                             th:value="${item.name}"
                             th:selected="${item.name.equals(gotRequest.getGroupType())}"
+                            th:groupTypeId="${item.id}"
                     >[group type name]
                     </option>
                 </select>
@@ -116,9 +117,9 @@
                         data-selected-text-format="count">
 
                     <option th:each="item : ${branchList}"
-                            th:value="${item.name}"
+                            th:value="${item.name.concat(' ').concat(item.parentId)}"
                             th:text="${item.name}"
-                            th:selected="${gotRequest.branches.contains(item.name)}"
+                            th:selected="${gotRequest.branches.contains(item.name.concat(' ').concat(item.parentId))}"
                             th:parentid="${item.parentId}"
                     ></option>
 
@@ -131,22 +132,177 @@
                        name="branchMask"
                        class="form-control selectpicker select"
                        placeholder="Branch Mask"
-                       th:value="${gotRequest.branchMask}">
+                       th:value="${gotRequest.branchMask}"
+                       onchange="changeMask()">
             </div>
         </div>
     </form>
-    <div class="search-response">
+    <div class="search-scopes">
         <ul class="list-group list-group-horizontal">
-            <li class="list-group-item">PROJECTS <span class="badge badge-primary badge-pill">0</span></li>
-            <li class="list-group-item">ISSUES <span class="badge badge-primary badge-pill">0</span></li>
-            <li class="list-group-item">MERGE REQUESTS <span class="badge badge-primary badge-pill">0</span></li>
-            <li class="list-group-item">MILESTONES <span class="badge badge-primary badge-pill">0</span></li>
-            <li class="list-group-item">USERS <span class="badge badge-primary badge-pill">0</span></li>
-            <li class="list-group-item">BLOBS <span class="badge badge-primary badge-pill">0</span></li>
-            <li class="list-group-item">COMMITS <span class="badge badge-primary badge-pill">0</span></li>
+            <li class="list-group-item scope-label"
+                id = "issues"
+                onclick="chooseIssues()">
+                ISSUES <span class="badge badge-primary badge-pill"
+                             th:text="${issuesList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
+                onclick="chooseMergeRequests()"
+                id = "merge-request">
+                MERGE REQUESTS <span class="badge badge-primary badge-pill"
+                                     th:text="${mergeRequestList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
+                onclick="chooseMilestones()"
+                id = "milestones">
+                MILESTONES <span class="badge badge-primary badge-pill"
+                                 th:text="${milestoneList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
+                onclick="chooseUsers()"
+                id = "users">
+                USERS <span class="badge badge-primary badge-pill"
+                            th:text="${userList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
+                onclick="chooseWiki()"
+                id = "wiki">
+                WIKI <span class="badge badge-primary badge-pill"
+                           th:text="${wikiList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
+                onclick="chooseBlobs()"
+                id = "blobs">
+                BLOBS <span class="badge badge-primary badge-pill"
+                            th:text="${blobList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
+                onclick="chooseCommits()"
+                id = "commits">
+                COMMITS <span class="badge badge-primary badge-pill"
+                              th:text="${commitList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
+                onclick="chooseComments()"
+                id = "comments">
+                COMMENTS <span class="badge badge-primary badge-pill"
+                              th:text="${commentList.size()}">[size]</span>
+            </li>
         </ul>
     </div>
-
+    <div class="search-results w-75">
+        <div class="scope issues">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${issuesList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+        <div class="scope mergeRequests">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${mergeRequestList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+        <div class="scope milestones">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${milestoneList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+        <div class="scope users">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${userList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+        <div class="scope blobs">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${blobList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+        <div class="scope commits">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${commitList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+        <div class="scope wiki">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${wikiList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+        <div class="scope comments">
+            <div class="list-group list-group-flush">
+                <div th:each="item : ${commentList}"
+                     href="#"
+                     class="list-group-item flex-column justify-content align-items-start result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.location}">[location]</small>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

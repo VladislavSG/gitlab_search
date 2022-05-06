@@ -63,6 +63,7 @@
                     <option th:each="item: ${groupTypeList}"
                             th:text="${item.name}"
                             th:value="${item.name}"
+                            th:groupTypeId="${item.id}"
                     >[group type name]
                     </option>
                 </select>
@@ -83,7 +84,7 @@
                 </select>
 
             </div>
-            <div class="select-block form-group" >
+            <div class="select-block form-group">
                 <label for="projectId">Project</label>
                 <select name="projectId"
                         id="projectId"
@@ -109,7 +110,7 @@
                         data-selected-text-format="count">
 
                     <option th:each="item : ${branchList}"
-                            th:value="${item.name}"
+                            th:value="${item.name.concat(' ').concat(item.parentId)}"
                             th:text="${item.name}"
                             th:selected="${true}"
                             th:parentid="${item.parentId}"
@@ -123,7 +124,8 @@
                        id="branchMask"
                        class="selectpicker select"
                        placeholder="Branch Mask"
-                       th:field="*{branchMask}">
+                       th:field="*{branchMask}"
+                       onchange="changeMask()">
             </div>
         </div>
     </form>

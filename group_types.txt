@@ -1,5 +1,2 @@
- 1  :  test_label  
-
-2:deprecated_label
-
-
+groupType1 : 2, 3
+groupType2 : 5, 6, 8
