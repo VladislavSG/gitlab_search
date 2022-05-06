@@ -24,23 +24,31 @@ public class GroupTypes {
         }
 
         try {
+            Map<String, Integer> type2Id = new HashMap<>();
             for (String line : Files.readAllLines(path)) {
                 String[] tokens = line.split(":");
                 if (tokens.length >= 2) {
-                    try {
-                        long key = Long.parseLong(tokens[0].trim());
-                        String type = tokens[1].trim();
-                        GroupType gt;
-                        int types_size = types.size();
-                        if (key < types_size) {
-                            gt = types.get(Math.toIntExact(key));
+                    String type = tokens[0].trim();
+                    if (type.isEmpty()) {
+                        continue;
+                    }
+                    int typeId = type2Id.compute(type, (t, id) -> {
+                        if (id == null) {
+                            int newId = types.size();
+                            types.add(new GroupType(newId, t));
+                            return newId;
                         } else {
-                            gt = new GroupType(types_size, type);
-                            types.add(gt);
+                            return id;
                         }
-                        id2type.put(key, gt);
-                    } catch (NumberFormatException ignored) {
-                        //ignore line with invalid id
+                    });
+                    GroupType gt = types.get(typeId);
+
+                    String[] groups = tokens[1].split(",");
+                    for (String groupId : groups) {
+                        try {
+                            Long id = Long.parseLong(groupId.trim());
+                            id2type.putIfAbsent(id, gt);
+                        } catch (NumberFormatException ignored) {}
                     }
                 }
             }

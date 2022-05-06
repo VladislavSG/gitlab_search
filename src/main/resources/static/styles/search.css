@@ -16,6 +16,7 @@ body {
     border-bottom: 1px solid #dbdbdb;
     display: grid;
     justify-content: space-between;
+    z-index: 3001;
 }
 
 .user-info{
@@ -64,7 +65,7 @@ body {
 }
 
 .search-button {
-    color: #1f75cb;
+    background-color: #1f75cb;
 }
 
 .search-button:hover {
@@ -91,8 +92,12 @@ body {
     width: 95%;
 }
 
-.search-response{
+.search-scopes{
     padding-top: 15px;
+}
+
+.search-results{
+    padding-top: 20px;
 }
 
 .list-group-item{
@@ -102,4 +107,13 @@ body {
 
 .list-group-item:hover{
     cursor: pointer;
+}
+
+.scope{
+    display: none;
+}
+
+.result{
+    height: 75px;
+    min-width: 800px;
 }

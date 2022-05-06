@@ -14,7 +14,7 @@ public class SearchService {
     private final GitLabApi gitLabApi;
 
     public SearchService() {
-        this(new GitLabApi("http://localhost", "rsQKVaBP1-RvtYGD4eTW"));
+        this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
     }
 
     public SearchService(final GitLabApi gitLabApi) {
@@ -51,8 +51,18 @@ public class SearchService {
     }
 
     @SuppressWarnings("unchecked")
+    public List<SearchBlob> searchWiki(SearchRequest request) throws GitLabApiException {
+        return (List<SearchBlob>) search(request, Constants.ProjectSearchScope.WIKI_BLOBS);
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Commit> searchCommits(SearchRequest request) throws GitLabApiException {
         return (List<Commit>) search(request, Constants.ProjectSearchScope.COMMITS);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Note> searchComments(SearchRequest request) throws GitLabApiException {
+        return (List<Note>) search(request, Constants.ProjectSearchScope.NOTES);
     }
 
     @SuppressWarnings("unchecked")
