@@ -1,7 +1,7 @@
 package enhanced.search.service;
 
 import enhanced.search.dto.SearchRequest;
-import org.gitlab4j.api.Constants;
+import org.gitlab4j.api.Constants.*;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.*;
@@ -21,19 +21,28 @@ public class SearchService {
         this.gitLabApi = gitLabApi;
     }
 
-    public List<?> search(SearchRequest request, Constants.ProjectSearchScope scope) throws GitLabApiException {
+    private List<?> search(SearchRequest request, Object scope) {
         try {
-            return gitLabApi
-                    .getSearchApi()
-                    .projectSearch(request.getProjectId(), scope, request.getSearchString());
-        } catch (GitLabApiException exception) {
-            return Collections.emptyList();
-        }
+            if (scope instanceof ProjectSearchScope projectScope) {
+                return gitLabApi
+                        .getSearchApi()
+                        .projectSearch(request.getProjectId(), projectScope, request.getSearchString());
+            }
+            if (scope instanceof  SearchScope globalScope) {
+                return gitLabApi
+                        .getSearchApi()
+                        .globalSearch(globalScope, request.getSearchString());
+            }
+        } catch (GitLabApiException ignored) {}
+        return Collections.EMPTY_LIST;
     }
 
     @SuppressWarnings("unchecked")
-    public List<SearchBlob> searchBlobs(SearchRequest request) throws GitLabApiException {
-        List<SearchBlob> result = (List<SearchBlob>) search(request, Constants.ProjectSearchScope.BLOBS);
+    public List<SearchBlob> searchBlobs(SearchRequest request) {
+        List<SearchBlob> result = (List<SearchBlob>) search(
+                request,
+                request.isGlobal() ? ProjectSearchScope.BLOBS : SearchScope.BLOBS
+        );
         return result
                 .stream()
                 .filter(Predicates.compose(request.getBranches()::contains, SearchBlob::getRef))
@@ -41,37 +50,61 @@ public class SearchService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Issue> searchIssues(SearchRequest request) throws GitLabApiException {
-        return  (List<Issue>) search(request, Constants.ProjectSearchScope.ISSUES);
+    public List<Issue> searchIssues(SearchRequest request) {
+        return  (List<Issue>) search(
+                request,
+                request.isGlobal() ? SearchScope.ISSUES : ProjectSearchScope.ISSUES
+        );
     }
 
     @SuppressWarnings("unchecked")
-    public List<MergeRequest> searchMergeRequest(SearchRequest request) throws GitLabApiException {
-        return (List<MergeRequest>) search(request, Constants.ProjectSearchScope.MERGE_REQUESTS);
+    public List<MergeRequest> searchMergeRequest(SearchRequest request) {
+        return (List<MergeRequest>) search(
+                request,
+                request.isGlobal() ? SearchScope.MERGE_REQUESTS : ProjectSearchScope.MERGE_REQUESTS
+        );
     }
 
     @SuppressWarnings("unchecked")
-    public List<SearchBlob> searchWiki(SearchRequest request) throws GitLabApiException {
-        return (List<SearchBlob>) search(request, Constants.ProjectSearchScope.WIKI_BLOBS);
+    public List<SearchBlob> searchWiki(SearchRequest request) {
+        return (List<SearchBlob>) search(
+                request,
+                request.isGlobal() ? SearchScope.WIKI_BLOBS : ProjectSearchScope.WIKI_BLOBS
+        );
     }
 
     @SuppressWarnings("unchecked")
-    public List<Commit> searchCommits(SearchRequest request) throws GitLabApiException {
-        return (List<Commit>) search(request, Constants.ProjectSearchScope.COMMITS);
+    public List<Commit> searchCommits(SearchRequest request) {
+        return (List<Commit>) search(
+                request,
+                request.isGlobal() ? SearchScope.COMMITS : ProjectSearchScope.COMMITS
+        );
     }
 
     @SuppressWarnings("unchecked")
-    public List<Note> searchComments(SearchRequest request) throws GitLabApiException {
-        return (List<Note>) search(request, Constants.ProjectSearchScope.NOTES);
+    public List<Note> searchComments(SearchRequest request) {
+        if (request.getProjectId() == -1L) {
+            throw new IllegalArgumentException();
+        }
+        return (List<Note>) search(
+                request,
+                ProjectSearchScope.NOTES
+        );
     }
 
     @SuppressWarnings("unchecked")
-    public List<Milestone> searchMilestone(SearchRequest request) throws GitLabApiException {
-        return (List<Milestone>) search(request, Constants.ProjectSearchScope.MILESTONES);
+    public List<Milestone> searchMilestone(SearchRequest request) {
+        return (List<Milestone>) search(
+                request,
+                request.isGlobal() ? SearchScope.MILESTONES : ProjectSearchScope.MILESTONES
+        );
     }
 
     @SuppressWarnings("unchecked")
-    public List<User> searchUsers(SearchRequest request) throws GitLabApiException {
-        return (List<User>) search(request, Constants.ProjectSearchScope.USERS);
+    public List<User> searchUsers(SearchRequest request) {
+        return (List<User>) search(
+                request,
+                request.isGlobal() ? SearchScope.USERS : ProjectSearchScope.USERS
+        );
     }
 }

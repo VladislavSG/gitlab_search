@@ -63,7 +63,7 @@ public class GitlabGetService {
 
     public List<Project> getProjects(final SearchRequest request) throws GitLabApiException {
         List<org.gitlab4j.api.models.Group> groups;
-        if (request != null && request.getGroupId() != null) {
+        if (request != null && request.getGroupId() != -1L) {
             groups = Collections.singletonList(
                     gitLabApi
                             .getGroupApi()
@@ -83,21 +83,23 @@ public class GitlabGetService {
         return projects;
     }
 
-    public List<Branch> getBranches() throws GitLabApiException {
+    public List<Branch> getBranches() {
         List<Branch> res = new ArrayList<>();
-        for (Project p : getProjects()) {
-            gitLabApi
-                    .getRepositoryApi()
-                    .getBranchesStream(p.getId())
-                    .map(b -> new Branch(b.getName(), p.getId()))
-                    .forEach(res::add);
-        }
+        try {
+            for (Project p : getProjects()) {
+                gitLabApi
+                        .getRepositoryApi()
+                        .getBranchesStream(p.getId())
+                        .map(b -> new Branch(b.getName(), p.getId()))
+                        .forEach(res::add);
+            }
+        } catch (GitLabApiException ignored) {}
         return res;
     }
 
     public List<Branch> getBranches(final SearchRequest request) throws GitLabApiException {
-        Long projectId = request.getProjectId();
-        if (projectId != null) {
+        long projectId = request.getProjectId();
+        if (projectId != -1L) {
             return gitLabApi
                     .getRepositoryApi()
                     .getBranchesStream(projectId)
@@ -106,16 +108,5 @@ public class GitlabGetService {
         } else {
             return Collections.emptyList();
         }
-    }
-
-    public List<Branch> getBranches(final SearchRequest request, Regex regex) throws GitLabApiException {
-        List<Branch> branches = getBranches(request);
-        if (regex != null) {
-            branches = branches
-                    .stream()
-                    .filter(Predicates.compose(regex::matches, Branch::getName))
-                    .toList();
-        }
-        return branches;
     }
 }
