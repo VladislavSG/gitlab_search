@@ -46,7 +46,7 @@ public class GroupTypes {
                         String[] groups = tokens[1].split(",");
                         for (String groupId : groups) {
                             try {
-                                Long id = Long.parseLong(groupId);
+                                Long id = Long.parseLong(groupId.trim());
                                 id2type.putIfAbsent(id, gt);
                             } catch (NumberFormatException ignored) {}
                         }

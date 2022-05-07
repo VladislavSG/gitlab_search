@@ -84,7 +84,8 @@ public class SearchService {
     @SuppressWarnings("unchecked")
     public List<Note> searchComments(SearchRequest request) {
         if (request.getProjectId() == -1L) {
-            throw new IllegalArgumentException();
+            return Collections.emptyList();
+            //throw new IllegalArgumentException();
         }
         return (List<Note>) search(
                 request,

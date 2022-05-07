@@ -131,7 +131,7 @@ class SearchController(
         val userList = searchService.searchUsers(gotRequest)
             .map {
                 it.makeResponse(
-                    it.location
+                    it.location ?: ""
                 )
             }
 
