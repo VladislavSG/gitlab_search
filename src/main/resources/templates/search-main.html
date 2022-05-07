@@ -60,6 +60,10 @@
                         class="selectpicker select"
                         data-live-search="true"
                         onchange="changeGroupType()">
+                    <option th:text="${anyGroupType.name}"
+                            th:value="${null}"
+                            th:groupTypeId="${anyGroupType.id}">
+                    </option>
                     <option th:each="item: ${groupTypeList}"
                             th:text="${item.name}"
                             th:value="${item.name}"
@@ -75,12 +79,19 @@
                         class="selectpicker select"
                         data-live-search="true"
                         onchange="changeGroup()">
-                    <option th:each="item: ${groupList}"
-                            th:text="${item.name}"
-                            th:value="${item.id}"
-                            th:parentid="${item.parentId}"
-                    >[group name]
+                    <option th:value="${anyGroup.id}"
+                            th:text="${anyGroup.name}"
+                            th:parentid="${anyGroup.parentId}">
                     </option>
+                    <optgroup th:each="entry: ${groupList}"
+                              th:label="${entry.key}">
+                        <option th:each="item: ${entry.value}"
+                                th:text="${item.name}"
+                                th:value="${item.id}"
+                                th:parentid="${item.parentId}"
+                        >[group name]
+                        </option>
+                    </optgroup>
                 </select>
 
             </div>
@@ -92,12 +103,19 @@
                         data-selected-text-format="count"
                         data-live-search="true"
                         onchange="changeProject()">
-                    <option th:each="item: ${repositoryList}"
-                            th:text="${item.name}"
-                            th:value="${item.id}"
-                            th:parentid="${item.parentId}"
-                    >[repository name]
+                    <option th:value="${anyProject.id}"
+                            th:text="${anyProject.name}"
+                            th:parentid="${anyProject.parentId}">
                     </option>
+                    <optgroup th:each="entry: ${repositoryList}"
+                              th:label="${entry.key}">
+                        <option th:each="item: ${entry.value}"
+                                th:text="${item.name}"
+                                th:value="${item.id}"
+                                th:parentid="${item.parentId}"
+                        >[repository name]
+                        </option>
+                    </optgroup>
                 </select>
             </div>
             <div class="select-block form-group">
@@ -109,13 +127,15 @@
                         multiple
                         data-selected-text-format="count">
 
-                    <option th:each="item : ${branchList}"
-                            th:value="${item.name.concat(' ').concat(item.parentId)}"
-                            th:text="${item.name}"
-                            th:selected="${true}"
-                            th:parentid="${item.parentId}"
-                    ></option>
-
+                    <optgroup th:each="entry: ${branchList}"
+                              th:label="${entry.key}">
+                        <option th:each="item : ${entry.value}"
+                                th:value="${item.name.concat(' ').concat(item.parentId)}"
+                                th:text="${item.name}"
+                                th:selected="${true}"
+                                th:parentid="${item.parentId}">
+                        </option>
+                    </optgroup>
                 </select>
             </div>
             <div class="select-block form-group">

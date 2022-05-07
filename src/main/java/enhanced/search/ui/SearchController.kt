@@ -32,7 +32,7 @@ class SearchController(
 
     @GetMapping("/search")
     fun search(
-        @ModelAttribute gotRequest: SearchRequest = SearchRequest(),
+        @ModelAttribute gotRequest: SearchRequest,
         model: Model
     ): String {
         println(gotRequest.toString())
@@ -154,11 +154,18 @@ class SearchController(
         projectList: List<Project>,
         branchList: List<Branch>,
     ) {
+
+
         model.addAttribute("request", SearchRequest())
-        model.addAttribute("groupTypeList", listOf(ANY_GROUP_TYPE).plus(groupTypeList))
-        model.addAttribute("groupList", listOf(ANY_GROUP).plus(groupList))
-        model.addAttribute("repositoryList", listOf(ANY_PROJECT).plus(projectList))
-        model.addAttribute("branchList", branchList)
+
+        model.addAttribute("anyGroupType", ANY_GROUP_TYPE)
+        model.addAttribute("anyGroup", ANY_GROUP)
+        model.addAttribute("anyProject", ANY_PROJECT)
+
+        model.addAttribute("groupTypeList", groupTypeList)
+        model.addAttribute("groupList", groupList.groupBy { groupTypeList.findById(it.parentId)?.name ?: "unknown" })
+        model.addAttribute("repositoryList", projectList.groupBy { groupList.findById(it.parentId).name })
+        model.addAttribute("branchList", branchList.groupBy { projectList.findById(it.parentId).name })
     }
 
 }

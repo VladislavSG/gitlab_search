@@ -62,6 +62,11 @@
                         class="selectpicker select"
                         onchange="changeGroupType()"
                         data-live-search="true">
+                    <option th:text="${anyGroupType.name}"
+                            th:value="${null}"
+                            th:groupTypeId="${anyGroupType.id}"
+                            th:selected="${gotRequest.getGroupType() == null}">
+                    </option>
                     <option th:each="item: ${groupTypeList}"
                             th:text="${item.name}"
                             th:value="${item.name}"
@@ -79,13 +84,27 @@
                         class="selectpicker select"
                         onchange="changeGroup()"
                         data-live-search="true">
-                    <option th:each="item: ${groupList}"
+                    <option th:value="${anyGroup.id}"
+                            th:text="${anyGroup.name}"
+                            th:parentid="${anyGroup.parentId}">
+                    </option>
+                    <optgroup th:each="entry: ${groupList}"
+                              th:label="${entry.key}">
+                        <option th:each="item: ${entry.value}"
+                                th:text="${item.name}"
+                                th:value="${item.id}"
+                                th:parentid="${item.parentId}"
+                                th:selected="${item.id == gotRequest.getGroupId()}"
+                        >[group name]
+                        </option>
+                    </optgroup>
+                    <!--<option th:each="item: ${groupList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
                             th:parentid="${item.parentId}"
                             th:selected="${item.id == gotRequest.getGroupId()}"
                     >[group name]
-                    </option>
+                    </option>-->
                 </select>
 
             </div>
@@ -97,13 +116,27 @@
                         data-selected-text-format="count"
                         data-live-search="true"
                         onchange="changeProject()">
-                    <option th:each="item: ${repositoryList}"
+                    <option th:value="${anyProject.id}"
+                            th:text="${anyProject.name}"
+                            th:parentid="${anyProject.parentId}">
+                    </option>
+                    <optgroup th:each="entry: ${repositoryList}"
+                              th:label="${entry.key}">
+                        <option th:each="item: ${entry.value}"
+                                th:text="${item.name}"
+                                th:value="${item.id}"
+                                th:parentid="${item.parentId}"
+                                th:selected="${item.id == gotRequest.getProjectId()}"
+                        >[repository name]
+                        </option>
+                    </optgroup>
+                    <!--<option th:each="item: ${repositoryList}"
                             th:text="${item.name}"
                             th:value="${item.id}"
                             th:parentid="${item.parentId}"
                             th:selected="${item.id == gotRequest.getProjectId()}"
                     >[repository name]
-                    </option>
+                    </option>-->
                 </select>
             </div>
             <div class="select-block form-group">
@@ -116,12 +149,21 @@
                         data-live-search="true"
                         data-selected-text-format="count">
 
-                    <option th:each="item : ${branchList}"
+                    <optgroup th:each="entry: ${branchList}"
+                              th:label="${entry.key}">
+                        <option th:each="item : ${entry.value}"
+                                th:value="${item.name.concat(' ').concat(item.parentId)}"
+                                th:text="${item.name}"
+                                th:selected="${gotRequest.branches.contains(item.name.concat(' ').concat(item.parentId))}"
+                                th:parentid="${item.parentId}">
+                        </option>
+                    </optgroup>
+                    <!--<option th:each="item : ${branchList}"
                             th:value="${item.name.concat(' ').concat(item.parentId)}"
                             th:text="${item.name}"
                             th:selected="${gotRequest.branches.contains(item.name.concat(' ').concat(item.parentId))}"
                             th:parentid="${item.parentId}"
-                    ></option>
+                    ></option>-->
 
                 </select>
             </div>
@@ -140,52 +182,52 @@
     <div class="search-scopes">
         <ul class="list-group list-group-horizontal">
             <li class="list-group-item scope-label"
-                id = "issues"
+                id="issues"
                 onclick="chooseIssues()">
                 ISSUES <span class="badge badge-primary badge-pill"
                              th:text="${issuesList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseMergeRequests()"
-                id = "merge-request">
+                id="merge-request">
                 MERGE REQUESTS <span class="badge badge-primary badge-pill"
                                      th:text="${mergeRequestList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseMilestones()"
-                id = "milestones">
+                id="milestones">
                 MILESTONES <span class="badge badge-primary badge-pill"
                                  th:text="${milestoneList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseUsers()"
-                id = "users">
+                id="users">
                 USERS <span class="badge badge-primary badge-pill"
                             th:text="${userList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseWiki()"
-                id = "wiki">
+                id="wiki">
                 WIKI <span class="badge badge-primary badge-pill"
                            th:text="${wikiList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseBlobs()"
-                id = "blobs">
+                id="blobs">
                 BLOBS <span class="badge badge-primary badge-pill"
                             th:text="${blobList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseCommits()"
-                id = "commits">
+                id="commits">
                 COMMITS <span class="badge badge-primary badge-pill"
                               th:text="${commitList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseComments()"
-                id = "comments">
+                id="comments">
                 COMMENTS <span class="badge badge-primary badge-pill"
-                              th:text="${commentList.size()}">[size]</span>
+                               th:text="${commentList.size()}">[size]</span>
             </li>
         </ul>
     </div>
