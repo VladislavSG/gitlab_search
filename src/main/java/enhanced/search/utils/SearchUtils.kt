@@ -27,7 +27,7 @@ fun org.gitlab4j.api.models.MergeRequest.makeResponse(
 ) = Response(
     this.title,
     "$groupTypeName / $groupName / $projectName / ${this.sourceBranch} -> ${this.targetBranch}",
-    dateFormat.format(this.createdAt)+ " by ${this.author.name}"
+    dateFormat.format(this.createdAt) + " by ${this.author.name}"
 )
 
 fun org.gitlab4j.api.models.SearchBlob.makeResponse(
@@ -73,10 +73,12 @@ fun org.gitlab4j.api.models.User.makeResponse(
 ) = Response(
     this.name,
     location,
-    dateFormat.format(this.createdAt)
+    if (this.createdAt == null) "" else dateFormat.format(this.createdAt)
 )
 
 fun String.makeShorter(): String {
     return if (this.length < 63) this
     else "${this.substring(0, 60)}..."
 }
+
+fun String.makeUrl() = this.replaceFirst("c630bb74d5d2", "localhost")

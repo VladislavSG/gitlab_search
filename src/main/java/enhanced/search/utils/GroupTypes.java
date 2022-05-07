@@ -28,28 +28,28 @@ public class GroupTypes {
             for (String line : Files.readAllLines(path)) {
                 String[] tokens = line.split(":");
                 if (tokens.length >= 2) {
-                    String type = tokens[0].trim();
-                    if (type.isEmpty()) {
-                        continue;
-                    }
-                    int typeId = type2Id.compute(type, (t, id) -> {
-                        if (id == null) {
-                            int newId = types.size();
-                            types.add(new GroupType(newId, t));
-                            return newId;
-                        } else {
-                            return id;
+                        String type = tokens[0].trim();
+                        if (type.isEmpty()) {
+                            continue;
                         }
-                    });
-                    GroupType gt = types.get(typeId);
+                        int typeId = type2Id.compute(type, (t, id) -> {
+                            if (id == null) {
+                                int newId = types.size();
+                                types.add(new GroupType(newId, t));
+                                return newId;
+                            } else {
+                                return id;
+                            }
+                        });
+                        GroupType gt = types.get(typeId);
 
-                    String[] groups = tokens[1].split(",");
-                    for (String groupId : groups) {
-                        try {
-                            Long id = Long.parseLong(groupId.trim());
-                            id2type.putIfAbsent(id, gt);
-                        } catch (NumberFormatException ignored) {}
-                    }
+                        String[] groups = tokens[1].split(",");
+                        for (String groupId : groups) {
+                            try {
+                                Long id = Long.parseLong(groupId.trim());
+                                id2type.putIfAbsent(id, gt);
+                            } catch (NumberFormatException ignored) {}
+                        }
                 }
             }
         } catch (IOException ignored) {
