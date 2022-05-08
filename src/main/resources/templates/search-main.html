@@ -125,8 +125,8 @@
                         name="branches"
                         id="branches"
                         multiple
-                        data-selected-text-format="count">
-
+                        data-selected-text-format="count"
+                        data-live-search="true">
                     <optgroup th:each="entry: ${branchList}"
                               th:label="${entry.key}">
                         <option th:each="item : ${entry.value}"
