@@ -36,7 +36,7 @@ public class GitlabGetService {
         Stream<org.gitlab4j.api.models.Group> groups = gitLabApi
                 .getGroupApi()
                 .getGroupsStream();
-        if (request != null && request.getGroupType() != null) {
+        if (request != null && !request.getGroupType().isEmpty()) {
             final Predicate<Long> predicateID = id -> request
                     .getGroupType()
                     .equals(gt.id2type.get(id).getName());

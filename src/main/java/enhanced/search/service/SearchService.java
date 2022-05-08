@@ -1,9 +1,10 @@
 package enhanced.search.service;
 
 import enhanced.search.dto.SearchRequest;
-import org.gitlab4j.api.Constants.*;
+import enhanced.search.utils.AllSearchScopes;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
+import org.gitlab4j.api.SearchApi;
 import org.gitlab4j.api.models.*;
 import org.glassfish.jersey.internal.guava.Predicates;
 
@@ -21,27 +22,35 @@ public class SearchService {
         this.gitLabApi = gitLabApi;
     }
 
-    private List<?> search(SearchRequest request, Object scope) {
+    private List<?> search(SearchRequest request, AllSearchScopes scope) {
         try {
-            if (scope instanceof ProjectSearchScope projectScope) {
-                return gitLabApi
-                        .getSearchApi()
-                        .projectSearch(request.getProjectId(), projectScope, request.getSearchString());
-            }
-            if (scope instanceof  SearchScope globalScope) {
-                return gitLabApi
-                        .getSearchApi()
-                        .globalSearch(globalScope, request.getSearchString());
-            }
-        } catch (GitLabApiException ignored) {}
-        return Collections.EMPTY_LIST;
+            SearchApi searchApi = gitLabApi.getSearchApi();
+            return switch (request.getScope()) {
+                case GLOBAL, GROUP_TYPE -> searchApi.globalSearch(
+                        scope.getGlobalScope(),
+                        request.getSearchString()
+                );
+                case GROUP -> searchApi.groupSearch(
+                        request.getGroupId(),
+                        scope.getGroupScope(),
+                        request.getSearchString()
+                );
+                case PROJECT -> searchApi.projectSearch(
+                        request.getProjectId(),
+                        scope.getProjectScope(),
+                        request.getSearchString()
+                );
+            };
+        } catch (GitLabApiException | IllegalArgumentException ignored) {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     @SuppressWarnings("unchecked")
     public List<SearchBlob> searchBlobs(SearchRequest request) {
         List<SearchBlob> result = (List<SearchBlob>) search(
                 request,
-                request.isGlobal() ? ProjectSearchScope.BLOBS : SearchScope.BLOBS
+                AllSearchScopes.BLOBS
         );
         return result
                 .stream()
@@ -53,7 +62,7 @@ public class SearchService {
     public List<Issue> searchIssues(SearchRequest request) {
         return  (List<Issue>) search(
                 request,
-                request.isGlobal() ? SearchScope.ISSUES : ProjectSearchScope.ISSUES
+                AllSearchScopes.ISSUES
         );
     }
 
@@ -61,7 +70,7 @@ public class SearchService {
     public List<MergeRequest> searchMergeRequest(SearchRequest request) {
         return (List<MergeRequest>) search(
                 request,
-                request.isGlobal() ? SearchScope.MERGE_REQUESTS : ProjectSearchScope.MERGE_REQUESTS
+                AllSearchScopes.MERGE_REQUESTS
         );
     }
 
@@ -69,7 +78,7 @@ public class SearchService {
     public List<SearchBlob> searchWiki(SearchRequest request) {
         return (List<SearchBlob>) search(
                 request,
-                request.isGlobal() ? SearchScope.WIKI_BLOBS : ProjectSearchScope.WIKI_BLOBS
+                AllSearchScopes.WIKI_BLOBS
         );
     }
 
@@ -77,19 +86,15 @@ public class SearchService {
     public List<Commit> searchCommits(SearchRequest request) {
         return (List<Commit>) search(
                 request,
-                request.isGlobal() ? SearchScope.COMMITS : ProjectSearchScope.COMMITS
+                AllSearchScopes.COMMITS
         );
     }
 
     @SuppressWarnings("unchecked")
     public List<Note> searchComments(SearchRequest request) {
-        if (request.getProjectId() == -1L) {
-            return Collections.emptyList();
-            //throw new IllegalArgumentException();
-        }
         return (List<Note>) search(
                 request,
-                ProjectSearchScope.NOTES
+                AllSearchScopes.NOTES
         );
     }
 
@@ -97,7 +102,7 @@ public class SearchService {
     public List<Milestone> searchMilestone(SearchRequest request) {
         return (List<Milestone>) search(
                 request,
-                request.isGlobal() ? SearchScope.MILESTONES : ProjectSearchScope.MILESTONES
+                AllSearchScopes.MILESTONES
         );
     }
 
@@ -105,7 +110,7 @@ public class SearchService {
     public List<User> searchUsers(SearchRequest request) {
         return (List<User>) search(
                 request,
-                request.isGlobal() ? SearchScope.USERS : ProjectSearchScope.USERS
+                AllSearchScopes.USERS
         );
     }
 }
