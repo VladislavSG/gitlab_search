@@ -17,7 +17,8 @@ fun org.gitlab4j.api.models.Issue.makeResponse(
 ) = Response(
     this.title,
     "$groupTypeName / $groupName / $projectName",
-    dateFormat.format(this.createdAt) + " by ${this.author.name}"
+    dateFormat.format(this.createdAt) + " by ${this.author.name}",
+    this.webUrl.makeUrl()
 )
 
 fun org.gitlab4j.api.models.MergeRequest.makeResponse(
@@ -27,7 +28,8 @@ fun org.gitlab4j.api.models.MergeRequest.makeResponse(
 ) = Response(
     this.title,
     "$groupTypeName / $groupName / $projectName / ${this.sourceBranch} -> ${this.targetBranch}",
-    dateFormat.format(this.createdAt) + " by ${this.author.name}"
+    dateFormat.format(this.createdAt) + " by ${this.author.name}",
+    this.webUrl.makeUrl()
 )
 
 fun org.gitlab4j.api.models.SearchBlob.makeResponse(
@@ -37,6 +39,7 @@ fun org.gitlab4j.api.models.SearchBlob.makeResponse(
 ) = Response(
     this.basename,
     "$groupTypeName / $groupName / $projectName",
+    "",
     ""
 )
 
@@ -47,7 +50,8 @@ fun org.gitlab4j.api.models.Commit.makeResponse(
 ) = Response(
     this.title,
     "$groupTypeName / $groupName / $projectName",
-    dateFormat.format(this.createdAt) + " by ${this.author.name}"
+    dateFormat.format(this.createdAt) + " by ${this.author.name}",
+    this.webUrl.makeUrl()
 )
 
 fun org.gitlab4j.api.models.Note.makeResponse(
@@ -55,7 +59,8 @@ fun org.gitlab4j.api.models.Note.makeResponse(
 ) = Response(
     this.body.makeShorter(),
     "$noteableType with id=${this.noteableId}",
-    dateFormat.format(this.createdAt) + " by ${this.author.name}"
+    dateFormat.format(this.createdAt) + " by ${this.author.name}",
+    ""
 )
 
 fun org.gitlab4j.api.models.Milestone.makeResponse(
@@ -65,7 +70,8 @@ fun org.gitlab4j.api.models.Milestone.makeResponse(
 ) = Response(
     this.title,
     "$groupTypeName / $groupName / $projectName",
-    dateFormat.format(this.createdAt)
+    dateFormat.format(this.createdAt),
+    ""
 )
 
 fun org.gitlab4j.api.models.User.makeResponse(
@@ -73,7 +79,8 @@ fun org.gitlab4j.api.models.User.makeResponse(
 ) = Response(
     this.name,
     location,
-    if (this.createdAt == null) "" else dateFormat.format(this.createdAt)
+    if (this.createdAt == null) "" else dateFormat.format(this.createdAt),
+    this.webUrl.makeUrl()
 )
 
 fun String.makeShorter(): String {
@@ -81,4 +88,4 @@ fun String.makeShorter(): String {
     else "${this.substring(0, 60)}..."
 }
 
-fun String.makeUrl() = this.replaceFirst("c630bb74d5d2", "localhost")
+fun String.makeUrl() = this.replaceFirst("http://c630bb74d5d2", "http://localhost")

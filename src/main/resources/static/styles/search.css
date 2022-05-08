@@ -74,7 +74,7 @@ body {
 }
 
 .selectors {
-    width: 100%;
+    width: 90%;
     margin-top: 30px;
     display: flex;
     justify-content: space-between;

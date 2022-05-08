@@ -164,6 +164,7 @@ function loadPage() {
     changeGroupType(false)
     changeMask(false)
     chooseIssues()
+    groupTypeSelect.disabled = false
 }
 
 function hideAll() {

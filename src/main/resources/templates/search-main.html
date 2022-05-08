@@ -8,7 +8,7 @@
     <link th:rel="stylesheet" th:href="@{assets/bootstrap-select-1.13.18/css/bootstrap-select.css}"/>
     <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
 </head>
-<body>
+<body onload="loadPage()">
 <div class="header row">
     <h1 class="search-title">Enhanced Gitlab Search</h1>
     <div class="user-info row">
@@ -61,7 +61,7 @@
                         data-live-search="true"
                         onchange="changeGroupType()">
                     <option th:text="${anyGroupType.name}"
-                            th:value="${null}"
+                            th:value="${''}"
                             th:groupTypeId="${anyGroupType.id}">
                     </option>
                     <option th:each="item: ${groupTypeList}"
@@ -137,15 +137,6 @@
                         </option>
                     </optgroup>
                 </select>
-            </div>
-            <div class="select-block form-group">
-                <label for="branchMask">Branch Mask</label>
-                <input type="text"
-                       id="branchMask"
-                       class="selectpicker select"
-                       placeholder="Branch Mask"
-                       th:field="*{branchMask}"
-                       onchange="changeMask()">
             </div>
         </div>
     </form>

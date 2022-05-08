@@ -14,7 +14,7 @@ public class SearchService {
     private final GitLabApi gitLabApi;
 
     public SearchService() {
-        this(new GitLabApi("http://localhost", "rsQKVaBP1-RvtYGD4eTW"));
+        this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
     }
 
     public SearchService(final GitLabApi gitLabApi) {
