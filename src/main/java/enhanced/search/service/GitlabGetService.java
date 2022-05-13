@@ -4,7 +4,6 @@ import enhanced.search.dto.*;
 import enhanced.search.utils.GroupTypes;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
-import org.glassfish.jersey.internal.guava.Predicates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +13,8 @@ import java.util.stream.Stream;
 
 @Service
 public class GitlabGetService {
-
+    static final GroupTypes gt = new GroupTypes();
     private GitLabApi gitLabApi;
-    private final GroupTypes gt = new GroupTypes();
 
     @Value("${gitlab.url}")
     private String gitlabUrl;
@@ -29,19 +27,20 @@ public class GitlabGetService {
         return getGroups(null);
     }
 
-    private Stream<org.gitlab4j.api.models.Group> getGroupsStream(final SearchRequest request) throws GitLabApiException {
+    Stream<org.gitlab4j.api.models.Group> getGroupsStream(final String type) throws GitLabApiException {
         Stream<org.gitlab4j.api.models.Group> groups = gitLabApi
                 .getGroupApi()
                 .getGroupsStream();
-        if (request != null && !request.getGroupType().isEmpty()) {
-            final Predicate<Long> predicateID = id -> request
-                    .getGroupType()
-                    .equals(gt.id2type.get(id).getName());
-            final Predicate<org.gitlab4j.api.models.Group> predicateGroup =
-                    Predicates.compose(predicateID, org.gitlab4j.api.models.Group::getId);
+        if (type != null && !type.isEmpty()) {
+            final Predicate<org.gitlab4j.api.models.Group> predicateGroup = g ->
+                    type.equals(gt.id2type.get(g.getId()).getName());
             groups = groups.filter(predicateGroup);
         }
         return groups;
+    }
+
+    Stream<org.gitlab4j.api.models.Group> getGroupsStream(final SearchRequest request) throws GitLabApiException {
+        return getGroupsStream(request != null ? request.getGroupType() : null);
     }
 
     public List<Group> getGroups(final SearchRequest request) throws GitLabApiException {

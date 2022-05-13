@@ -70,10 +70,17 @@ public class SearchService {
 
     @SuppressWarnings("unchecked")
     public List<MergeRequest> searchMergeRequest(SearchRequest request) {
-        return (List<MergeRequest>) search(
+        List<MergeRequest> res = (List<MergeRequest>) search(
                 request,
                 AllSearchScopes.MERGE_REQUESTS
         );
+        if (!request.getBranches().isEmpty()) {
+            res = res.stream()
+                    .filter(mr -> request.getBranches().contains(mr.getSourceBranch())
+                               || request.getBranches().contains(mr.getTargetBranch()))
+                    .toList();
+        }
+        return res;
     }
 
     @SuppressWarnings("unchecked")
