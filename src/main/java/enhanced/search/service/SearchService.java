@@ -7,19 +7,21 @@ import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.SearchApi;
 import org.gitlab4j.api.models.*;
 import org.glassfish.jersey.internal.guava.Predicates;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class SearchService {
-    private final GitLabApi gitLabApi;
+    private GitLabApi gitLabApi;
 
-    public SearchService() {
-        this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
-    }
+    @Value("${gitlab.url}")
+    private String gitlabUrl;
 
-    public SearchService(final GitLabApi gitLabApi) {
-        this.gitLabApi = gitLabApi;
+    public void initToken(String token) {
+        this.gitLabApi = new GitLabApi(gitlabUrl, token);
     }
 
     private List<?> search(SearchRequest request, AllSearchScopes scope) {
@@ -60,7 +62,7 @@ public class SearchService {
 
     @SuppressWarnings("unchecked")
     public List<Issue> searchIssues(SearchRequest request) {
-        return  (List<Issue>) search(
+        return (List<Issue>) search(
                 request,
                 AllSearchScopes.ISSUES
         );

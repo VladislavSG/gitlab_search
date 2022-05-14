@@ -1,5 +1,6 @@
 package enhanced.search.service
 
+import enhanced.search.dto.User
 import enhanced.search.utils.SHAPasswordEncoder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.ldap.core.AttributesMapper
@@ -24,11 +25,7 @@ class UserService(
         password: String,
         token: String
     ) {
-        val dn: Name = LdapNameBuilder
-            .newInstance()
-            .add("ou", "users")
-            .add("uid", uid)
-            .build()
+        val dn: Name = buildName(uid)
 
         ldapTemplate.bind(
             DirContextAdapter(dn).apply {
@@ -41,13 +38,27 @@ class UserService(
         )
     }
 
-    fun search(username: String): String? {
+    fun search(username: String): User? {
         return ldapTemplate
             .search(
                 "ou=users",
                 "uid=$username",
                 AttributesMapper { attrs: Attributes ->
-                    attrs["description"].get() as String
-                } as AttributesMapper<String?>)[0]
+                    User(
+                        id = buildName(attrs["uid"].get() as String),
+                        uid = attrs["uid"].get() as String,
+                        firstName = attrs["cn"].get() as String,
+                        secondName = attrs["sn"].get() as String,
+                        accessToken = attrs["description"].get() as String
+                    )
+                } as AttributesMapper<User?>)[0]
+    }
+
+    private fun buildName(uid: String): Name {
+        return LdapNameBuilder
+            .newInstance()
+            .add("ou", "users")
+            .add("uid", uid)
+            .build()
     }
 }

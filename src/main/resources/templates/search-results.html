@@ -14,7 +14,7 @@
 <div class="header row">
     <h1 class="search-title">Enhanced Gitlab Search</h1>
     <div class="user-info row">
-        <span>FirstName LastName</span>
+        <span th:text="${userFullName}">FirstName LastName</span>
         <form th:action="@{/logout}"
               th:method="post">
             <button id="logout_button"

@@ -89,3 +89,5 @@ fun String.makeShorter(): String {
 }
 
 fun String.makeUrl() = this.replaceFirst("http://c630bb74d5d2", "http://localhost")
+
+fun User.getFullName() = (this.firstName ?: "") + " " + (this.secondName ?: "")

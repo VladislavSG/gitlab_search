@@ -2,30 +2,27 @@ package enhanced.search.service;
 
 import enhanced.search.dto.*;
 import enhanced.search.utils.GroupTypes;
-import kotlin.text.Regex;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.glassfish.jersey.internal.guava.Predicates;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-@Service("searchService")
+@Service
 public class GitlabGetService {
-    private final GitLabApi gitLabApi;
+
+    private GitLabApi gitLabApi;
     private final GroupTypes gt = new GroupTypes();
 
-    public GitlabGetService() {
-        this(new GitLabApi("http://localhost", "UJ22AqyxpeyHycn_Kb6c"));
-    }
-    //wYcZp6ui5uy3dKA5xw8N
-    //UJ22AqyxpeyHycn_Kb6c
+    @Value("${gitlab.url}")
+    private String gitlabUrl;
 
-    public GitlabGetService(final GitLabApi gitLabApi) {
-        this.gitLabApi = gitLabApi;
+    public void initToken(final String token){
+        this.gitLabApi = new GitLabApi(gitlabUrl, token);
     }
 
     public List<Group> getGroups() throws GitLabApiException {
@@ -93,7 +90,8 @@ public class GitlabGetService {
                         .map(b -> new Branch(b.getName(), p.getId()))
                         .forEach(res::add);
             }
-        } catch (GitLabApiException ignored) {}
+        } catch (GitLabApiException ignored) {
+        }
         return res;
     }
 
@@ -103,7 +101,7 @@ public class GitlabGetService {
             return gitLabApi
                     .getRepositoryApi()
                     .getBranchesStream(projectId)
-                    .map(b -> new Branch( b.getName(), projectId))
+                    .map(b -> new Branch(b.getName(), projectId))
                     .toList();
         } else {
             return Collections.emptyList();
