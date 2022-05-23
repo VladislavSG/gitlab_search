@@ -98,13 +98,6 @@
                         >[group name]
                         </option>
                     </optgroup>
-                    <!--<option th:each="item: ${groupList}"
-                            th:text="${item.name}"
-                            th:value="${item.id}"
-                            th:parentid="${item.parentId}"
-                            th:selected="${item.id == gotRequest.getGroupId()}"
-                    >[group name]
-                    </option>-->
                 </select>
 
             </div>
@@ -130,13 +123,6 @@
                         >[repository name]
                         </option>
                     </optgroup>
-                    <!--<option th:each="item: ${repositoryList}"
-                            th:text="${item.name}"
-                            th:value="${item.id}"
-                            th:parentid="${item.parentId}"
-                            th:selected="${item.id == gotRequest.getProjectId()}"
-                    >[repository name]
-                    </option>-->
                 </select>
             </div>
             <div class="select-block form-group">
@@ -151,7 +137,6 @@
 
                     <optgroup th:each="entry: ${branchList}"
                               th:label="${entry.key}">
-                        <th:block>
                         <option th:each="item : ${entry.value}"
                                 th:value="${item.name.concat(' ').concat(item.parentId)}"
                                 th:text="${item.name}"
@@ -159,14 +144,16 @@
                                 th:parentid="${item.parentId}">
                         </option>
                     </optgroup>
-                    <!--<option th:each="item : ${branchList}"
-                            th:value="${item.name.concat(' ').concat(item.parentId)}"
-                            th:text="${item.name}"
-                            th:selected="${gotRequest.branches.contains(item.name.concat(' ').concat(item.parentId))}"
-                            th:parentid="${item.parentId}"
-                    ></option>-->
-
                 </select>
+            </div>
+            <div class="select-block form-group">
+                <label for="branchMask">Branch Mask</label>
+                <input type="text"
+                       id="branchMask"
+                       class="selectpicker select"
+                       placeholder="Branch Mask"
+                       th:field="*{branchMask}"
+                       onchange="changeMask()">
             </div>
         </div>
     </form>

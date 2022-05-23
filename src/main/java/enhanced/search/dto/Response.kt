@@ -1,6 +1,6 @@
 package enhanced.search.dto
 
-class Response(
+data class Response(
     val title: String,
     val location: String,
     val createdDate: String,

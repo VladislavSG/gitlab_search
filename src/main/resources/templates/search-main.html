@@ -138,6 +138,15 @@
                     </optgroup>
                 </select>
             </div>
+            <div class="select-block form-group">
+                <label for="branchMask">Branch Mask</label>
+                <input type="text"
+                       id="branchMask"
+                       class="selectpicker select"
+                       placeholder="Branch Mask"
+                       th:field="*{branchMask}"
+                       onchange="changeMask()">
+            </div>
         </div>
     </form>
 
