@@ -31,6 +31,9 @@ public class SearchService {
     }
 
     private List<?> search(SearchRequest request, AllSearchScopes scope) {
+        if (request.getSearchString().isBlank()) {
+            return Collections.EMPTY_LIST;
+        }
         final SearchState ss = new SearchState(request, scope);
         try {
             return switch (request.getScope()) {
@@ -74,8 +77,8 @@ public class SearchService {
         );
         if (!request.getBranches().isEmpty()) {
             res = res.stream()
-                    .filter(mr -> request.getBranches().contains(mr.getSourceBranch())
-                            || request.getBranches().contains(mr.getTargetBranch()))
+                    .filter(mr -> request.getBranches().contains(mr.getSourceBranch() + " " + mr.getProjectId())
+                            || request.getBranches().contains(mr.getTargetBranch() + " " + mr.getProjectId()))
                     .toList();
         }
         return res;
