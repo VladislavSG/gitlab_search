@@ -42,7 +42,7 @@ public enum AllSearchScopes {
 
     private <T> T nullCheck(T obj) {
         if (obj == null) {
-            throw new IllegalArgumentException();
+            throw new UnsupportedOperationException();
         } else {
             return obj;
         }
