@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +27,7 @@ public class SearchService {
     private final GitlabGetService getService;
 
     @Value("${gitlab.url}")
-    private String gitlabUrl;
+    private String gitlabUrl = "http://localhost";
 
     public SearchService(@Autowired GitlabGetService service){
         this.getService = service;
@@ -47,13 +48,15 @@ public class SearchService {
                         .map(enhanced.search.dto.Branch::toString)
                         .collect(Collectors.toSet());
             }
-            if (!request.getBranchMask().isEmpty()) {
-                Pattern mask = Pattern.compile(request.getBranchMask());
-                res = res
-                        .stream()
-                        .filter(mask.asPredicate())
-                        .collect(Collectors.toSet());
-            }
+            try {
+                if (!request.getBranchMask().isEmpty()) {
+                    Pattern mask = Pattern.compile(request.getBranchMask());
+                    res = res
+                            .stream()
+                            .filter(mask.asPredicate())
+                            .collect(Collectors.toSet());
+                }
+            } catch (PatternSyntaxException ignored) {}
             return res;
         } catch (GitLabApiException ignored) {
         }
