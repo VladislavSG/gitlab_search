@@ -229,9 +229,6 @@ public class SearchService {
         }
 
         public List<?> searchInProjects() {
-            if (projectsId == null) {
-                return Collections.EMPTY_LIST;
-            }
             updateProjects();
             return projectsId
                     .stream()
