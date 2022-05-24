@@ -3,6 +3,7 @@ package enhanced.search.service;
 import enhanced.search.dto.GroupType;
 import enhanced.search.dto.SearchRequest;
 import enhanced.search.utils.AllSearchScopes;
+import enhanced.search.utils.ScopeType;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.*;
@@ -14,6 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -30,35 +33,69 @@ public class SearchService {
         this.getService.initToken(token);
     }
 
+    private Set<String> getBranches(SearchRequest request) {
+        try {
+            Set<String> res = request.getBranches();
+            if (res.isEmpty()) {
+                res = getService
+                        .getBranches(request)
+                        .stream()
+                        .map(enhanced.search.dto.Branch::toString)
+                        .collect(Collectors.toSet());
+            }
+            if (!request.getBranchMask().isEmpty()) {
+                Pattern mask = Pattern.compile(request.getBranchMask());
+                res = res
+                        .stream()
+                        .filter(mask.asPredicate())
+                        .collect(Collectors.toSet());
+            }
+            return res;
+        } catch (GitLabApiException ignored) {
+        }
+        return Collections.emptySet();
+    }
+
     private List<?> search(SearchRequest request, AllSearchScopes scope) {
         if (request.getSearchString().isBlank()) {
             return Collections.EMPTY_LIST;
         }
         final SearchState ss = new SearchState(request, scope);
         try {
-            return switch (request.getScope()) {
-                case GLOBAL -> ss.searchInGlobal();
-                case GROUP_TYPE -> ss.searchInGroupTypes();
-                case GROUP -> ss.searchInGroups();
-                case PROJECT -> ss.searchInProjects();
-            };
+            for (ScopeType st = request.getScope(); st != null; st = st.next()) {
+                try {
+                    return switch (st) {
+                        case GLOBAL -> ss.searchInGlobal();
+                        case GROUP_TYPE -> ss.searchInGroupTypes();
+                        case GROUP -> ss.searchInGroups();
+                        case PROJECT -> ss.searchInProjects();
+                    };
+                } catch (UnsupportedOperationException ignored) {
+                }
+            }
         } catch (GitlabRuntimeException ignored) {
-            // return EMPTY_LIST on fail. Some Gitlab api search requests can throw GitlabApiException
-            // even when used correctly. For example search blobs in CE version.
-            return Collections.EMPTY_LIST;
         }
+        // return EMPTY_LIST on fail. Some Gitlab api search requests can throw GitlabApiException
+        // even when used correctly. For example search blobs in CE version.
+        return Collections.EMPTY_LIST;
     }
 
     @SuppressWarnings("unchecked")
-    public List<SearchBlob> searchBlobs(SearchRequest request) {
+    public List<SearchBlob> searchBlobs(SearchRequest request, AllSearchScopes scope) {
         List<SearchBlob> result = (List<SearchBlob>) search(
                 request,
-                AllSearchScopes.BLOBS
+                scope
         );
         return result
                 .stream()
-                .filter(Predicates.compose(request.getBranches()::contains, SearchBlob::getRef))
+                .filter(Predicates.compose(
+                        getBranches(request)::contains,
+                        SearchBlob::getRef))
                 .toList();
+    }
+
+    public List<SearchBlob> searchBlobs(SearchRequest request) {
+        return searchBlobs(request, AllSearchScopes.BLOBS);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,21 +112,18 @@ public class SearchService {
                 request,
                 AllSearchScopes.MERGE_REQUESTS
         );
-        if (!request.getBranches().isEmpty()) {
+        Set<String> branches = getBranches(request);
+        if (!branches.isEmpty()) {
             res = res.stream()
-                    .filter(mr -> request.getBranches().contains(mr.getSourceBranch() + " " + mr.getProjectId())
-                            || request.getBranches().contains(mr.getTargetBranch() + " " + mr.getProjectId()))
+                    .filter(mr -> branches.contains(mr.getSourceBranch() + " " + mr.getProjectId())
+                            || branches.contains(mr.getTargetBranch() + " " + mr.getProjectId()))
                     .toList();
         }
         return res;
     }
 
-    @SuppressWarnings("unchecked")
     public List<SearchBlob> searchWiki(SearchRequest request) {
-        return (List<SearchBlob>) search(
-                request,
-                AllSearchScopes.WIKI_BLOBS
-        );
+        return searchBlobs(request, AllSearchScopes.WIKI_BLOBS);
     }
 
     @SuppressWarnings("unchecked")
@@ -159,31 +193,15 @@ public class SearchService {
                         );
             } catch (GitLabApiException e) {
                 throw new GitlabRuntimeException(e);
-            } catch (UnsupportedOperationException e) {
-                return searchInGroupTypes();
             }
         }
 
         public List<?> searchInGroupTypes() {
-            if (groupTypes == null) {
-                return Collections.EMPTY_LIST;
-            }
-            try {
-                updateGroups();
-                return groupsId
-                        .stream()
-                        .map(this::searchInGroups)
-                        .flatMap(Collection::stream)
-                        .toList();
-            } catch (UnsupportedOperationException e) {
-                return searchInProjects();
-            }
+            updateGroups();
+            return searchInGroups();
         }
 
         public List<?> searchInGroups() {
-            if (groupsId == null) {
-                return Collections.EMPTY_LIST;
-            }
             updateGroups();
             return groupsId
                     .stream()
@@ -203,9 +221,6 @@ public class SearchService {
                         );
             } catch (GitLabApiException e) {
                 throw new GitlabRuntimeException(e);
-            } catch (UnsupportedOperationException e) {
-                updateProjects();
-                return searchInProjects();
             }
         }
 
@@ -214,15 +229,11 @@ public class SearchService {
                 return Collections.EMPTY_LIST;
             }
             updateProjects();
-            try {
-                return projectsId
-                        .stream()
-                        .map(this::searchInProjects)
-                        .flatMap(Collection::stream)
-                        .toList();
-            } catch (UnsupportedOperationException e) {
-                return Collections.EMPTY_LIST;
-            }
+            return projectsId
+                    .stream()
+                    .map(this::searchInProjects)
+                    .flatMap(Collection::stream)
+                    .toList();
         }
 
         private List<?> searchInProjects(Object id) {
