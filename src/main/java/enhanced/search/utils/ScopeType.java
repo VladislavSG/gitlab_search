@@ -1,8 +1,13 @@
 package enhanced.search.utils;
 
 public enum ScopeType {
-    GLOBAL,
-    GROUP_TYPE,
+    PROJECT,
     GROUP,
-    PROJECT
+    GROUP_TYPE,
+    GLOBAL;
+
+    public ScopeType next() {
+        int ord = ordinal();
+        return ord == 0 ? null : values()[ord - 1];
+    }
 }
