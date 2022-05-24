@@ -126,6 +126,16 @@
                 </select>
             </div>
             <div class="select-block form-group">
+                <label for="branchMask">Branch Mask</label>
+                <input type="text"
+                       id="branchMask"
+                       name="branchMask"
+                       class="selectpicker select"
+                       placeholder="Branch Mask"
+                       th:value="${gotRequest.branchMask}"
+                       onchange="changeMask()">
+            </div>
+            <div class="select-block form-group">
                 <label for="branches">Branches</label>
 
                 <select class="form-control selectpicker select"
@@ -145,15 +155,6 @@
                         </option>
                     </optgroup>
                 </select>
-            </div>
-            <div class="select-block form-group">
-                <label for="branchMask">Branch Mask</label>
-                <input type="text"
-                       id="branchMask"
-                       class="selectpicker select"
-                       placeholder="Branch Mask"
-                       th:field="*{branchMask}"
-                       onchange="changeMask()">
             </div>
         </div>
     </form>
@@ -211,10 +212,10 @@
     </div>
     <div class="search-results w-75">
         <div class="scope issues">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:href="${item.url}"
                    th:each="item : ${issuesList}"
-                   class="list-group-item flex-column justify-content align-items-start result">
+                   class="list-group-item flex-column justify-content  result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -225,11 +226,11 @@
             </div>
         </div>
         <div class="scope mergeRequests">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:href="${item.url}"
                    th:each="item : ${mergeRequestList}"
-                   class="list-group-item flex-column justify-content align-items-start result">
-                    <div class="d-flex w-100 h justify-content-between">
+                   class="list-group-item flex-column justify-content  result">
+                    <div class="d-flex w-100 justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
                         <small th:text="${item.createdDate}">[date]</small>
@@ -239,9 +240,9 @@
             </div>
         </div>
         <div class="scope milestones">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${milestoneList}"
-                   class="list-group-item flex-column justify-content align-items-start result">
+                   class="list-group-item flex-column justify-content  result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -252,10 +253,10 @@
             </div>
         </div>
         <div class="scope users">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:href="${item.url}"
                    th:each="item : ${userList}"
-                   class="list-group-item flex-column justify-content align-items-start result">
+                   class="list-group-item flex-column justify-content  result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -266,9 +267,9 @@
             </div>
         </div>
         <div class="scope blobs">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${blobList}"
-                   class="list-group-item flex-column justify-content align-items-start result">
+                   class="list-group-item flex-column justify-content  result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -279,10 +280,10 @@
             </div>
         </div>
         <div class="scope commits">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${commitList}"
                    th:href="${item.url}"
-                   class="list-group-item flex-column justify-content align-items-start result">
+                   class="list-group-item flex-column justify-content  result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -293,10 +294,10 @@
             </div>
         </div>
         <div class="scope wiki">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${wikiList}"
                    th:href="${item.url}"
-                   class="list-group-item flex-column justify-content align-items-start result">
+                   class="list-group-item flex-column justify-content  result result-item">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -307,9 +308,9 @@
             </div>
         </div>
         <div class="scope comments">
-            <div class="list-group list-group-flush">
+            <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${commentList}"
-                   class="list-group-item flex-column justify-content align-items-start result">
+                   class="list-group-item flex-column justify-content  result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>

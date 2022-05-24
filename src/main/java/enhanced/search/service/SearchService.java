@@ -8,6 +8,7 @@ import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.*;
 import org.glassfish.jersey.internal.guava.Predicates;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +23,17 @@ import java.util.stream.Stream;
 @Service
 public class SearchService {
     private GitLabApi gitLabApi;
-    private GitlabGetService getService;
+    private final GitlabGetService getService;
 
     @Value("${gitlab.url}")
     private String gitlabUrl;
 
+    public SearchService(@Autowired GitlabGetService service){
+        this.getService = service;
+    }
+
     public void initToken(String token) {
         this.gitLabApi = new GitLabApi(gitlabUrl, token);
-        this.getService = new GitlabGetService();
         this.getService.initToken(token);
     }
 

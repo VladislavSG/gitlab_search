@@ -41,13 +41,14 @@ function changeProject(flag = false, selectBranches = true) {
     refreshAll()
 }
 
-function changeMask(selectMask) {
+function changeMask(selectMask = true) {
     const mask = document.getElementById("branchMask").value
+    const regexp = new RegExp(mask)
     changeProject(true, false)
     document.querySelectorAll("#branches option").forEach(it => {
         if (it.disabled) return
         const curBranch = it.value
-        if (!curBranch.includes(mask)) {
+        if (!curBranch.match(regexp)) {
             it.disabled = true
             it.selected = false
         } else {

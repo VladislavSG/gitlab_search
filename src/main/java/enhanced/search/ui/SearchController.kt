@@ -60,8 +60,8 @@ class SearchController(
 
         updateModel(model, groupTypes, groups, projects, branches, user.getFullName())
 
-        val issuesThread = thread {
-            val issuesList = searchService.searchIssues(gotRequest)
+        model.addAttribute("issuesList",
+            searchService.searchIssues(gotRequest)
                 .map {
                     val project = projects.findById(it.projectId)
                     val group = groups.findById(project.parentId)
@@ -71,13 +71,10 @@ class SearchController(
                         group.name,
                         project.name
                     )
-                }
+                })
 
-            model.addAttribute("issuesList", issuesList)
-        }
-
-        val mergeRequestThread = thread {
-            val mergeRequestList = searchService.searchMergeRequest(gotRequest)
+        model.addAttribute("mergeRequestList",
+            searchService.searchMergeRequest(gotRequest)
                 .map {
                     val project = projects.findById(it.projectId)
                     val group = groups.findById(project.parentId)
@@ -87,12 +84,10 @@ class SearchController(
                         group.name,
                         project.name
                     )
-                }
-            model.addAttribute("mergeRequestList", mergeRequestList)
-        }
+                })
 
-        val blobThread = thread {
-            val blobList = searchService.searchBlobs(gotRequest)
+        model.addAttribute("blobList",
+            searchService.searchBlobs(gotRequest)
                 .map {
                     val project = projects.findById(it.projectId)
                     val group = groups.findById(project.parentId)
@@ -102,84 +97,51 @@ class SearchController(
                         group.name,
                         project.name
                     )
-                }
-            model.addAttribute("blobList", blobList)
-        }
+                })
 
-        val wikiThread = thread {
-            val wikiList = searchService.searchWiki(gotRequest)
-                .map {
-                    val project = projects.findById(it.projectId)
-                    val group = groups.findById(project.parentId)
-                    val groupType = groupTypes.findById(group.parentId)
-                    it.makeResponse(
-                        groupType?.name ?: "unknown",
-                        group.name,
-                        project.name
-                    )
-                }
-            model.addAttribute("wikiList", wikiList)
-        }
+        model.addAttribute("wikiList", searchService.searchWiki(gotRequest)
+            .map {
+                val project = projects.findById(it.projectId)
+                val group = groups.findById(project.parentId)
+                val groupType = groupTypes.findById(group.parentId)
+                it.makeResponse(
+                    groupType?.name ?: "unknown",
+                    group.name,
+                    project.name
+                )
+            })
 
-        val commitThread = thread {
-            val commitList = searchService.searchCommits(gotRequest)
-                .map {
-                    val project = projects.findById(1) //fixme
-                    val group = groups.findById(project.parentId)
-                    val groupType = groupTypes.findById(group.parentId)
-                    it.makeResponse(
-                        groupType?.name ?: "unknown",
-                        group.name,
-                        project.name
-                    )
-                }
+        model.addAttribute("commitList", searchService.searchCommits(gotRequest)
+            .map {
+                it.makeResponse()
+            })
 
-            model.addAttribute("commitList", commitList)
-        }
+        model.addAttribute("commentList", searchService.searchComments(gotRequest)
+            .map {
+                it.makeResponse(
+                    it.noteableType
+                )
+            })
 
-        val commentThread = thread {
-            val commentList = searchService.searchComments(gotRequest)
-                .map {
-                    it.makeResponse(
-                        it.noteableType
-                    )
-                }
-            model.addAttribute("commentList", commentList)
-        }
+        model.addAttribute("milestoneList", searchService.searchMilestone(gotRequest)
+            .map {
+                val project = projects.findById(it.projectId)
+                val group = groups.findById(project.parentId)
+                val groupType = groupTypes.findById(group.parentId)
+                it.makeResponse(
+                    groupType?.name ?: "unknown",
+                    group.name,
+                    project.name
+                )
+            })
 
-        val milestoneThread = thread {
-            val milestoneList = searchService.searchMilestone(gotRequest)
-                .map {
-                    val project = projects.findById(it.projectId)
-                    val group = groups.findById(project.parentId)
-                    val groupType = groupTypes.findById(group.parentId)
-                    it.makeResponse(
-                        groupType?.name ?: "unknown",
-                        group.name,
-                        project.name
-                    )
-                }
-            model.addAttribute("milestoneList", milestoneList)
-        }
-
-        val userThread = thread {
-            val userList = searchService.searchUsers(gotRequest)
+        model.addAttribute("userList",
+            searchService.searchUsers(gotRequest)
                 .map {
                     it.makeResponse(
                         it.location ?: ""
                     )
-                }
-            model.addAttribute("userList", userList)
-        }
-
-        issuesThread.join()
-        mergeRequestThread.join()
-        blobThread.join()
-        wikiThread.join()
-        commitThread.join()
-        commentThread.join()
-        milestoneThread.join()
-        userThread.join()
+                })
 
         return "search-results"
     }
