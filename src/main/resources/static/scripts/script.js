@@ -2,6 +2,8 @@ const groupTypeSelect = document.getElementById("groupType")
 const groupSelect = document.getElementById("groupId")
 const projectSelect = document.getElementById("projectId")
 
+let prevMask = ""
+
 function changeGroupType(selectBranches = true) {
     const groupTypeSet = getPossibleGroupTypes()
     disableGroups(groupTypeSet)
@@ -37,25 +39,31 @@ function changeProject(flag = false, selectBranches = true) {
     const projectSet = getPossibleProjects()
 
     disableBranches(projectSet, selectBranches)
-
+    changeMask(selectBranches, false)
     refreshAll()
 }
 
-function changeMask(selectMask = true) {
-    const mask = document.getElementById("branchMask").value
-    const regexp = new RegExp(mask)
-    changeProject(true, false)
-    document.querySelectorAll("#branches option").forEach(it => {
-        if (it.disabled) return
-        const curBranch = it.value
-        if (!curBranch.match(regexp)) {
-            it.disabled = true
-            it.selected = false
-        } else {
-            it.selected = it.selected || selectMask
-        }
-    })
-    refreshAll()
+function changeMask(selectMask = true, needRefreshProjects = true) {
+    let mask = document.getElementById("branchMask").value
+    try {
+        const regexp = new RegExp(mask)
+        if (needRefreshProjects) changeProject(true, false)
+        document.querySelectorAll("#branches option").forEach(it => {
+            if (it.disabled) return
+            const curBranch = it.value
+            if (!curBranch.match(regexp)) {
+                it.disabled = true
+                it.selected = false
+            } else {
+                it.selected = it.selected || selectMask
+            }
+        })
+        prevMask = mask
+        refreshAll()
+    } catch (err) {
+        alert(`Invalid regular expression: ${mask}`)
+        document.getElementById("branchMask").value = prevMask
+    }
 }
 
 function getPossibleGroupTypes() {
