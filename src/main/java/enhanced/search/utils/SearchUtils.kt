@@ -2,13 +2,14 @@ package enhanced.search.utils
 
 import enhanced.search.dto.*
 import java.text.SimpleDateFormat
+import org.gitlab4j.api.models.Author
 
 val dateFormat = SimpleDateFormat("dd MMM yyyy")
 
 fun List<GroupType>.findById(groupTypeId: Long?): GroupType? = this.find { groupTypeId == it.id }
 fun List<Group>.findById(groupId: Long): Group = this.find { groupId == it.id }!!
 fun List<Project>.findById(projectId: Long): Project = this.find { projectId == it.id }!!
-
+fun getAuthorName(a : Author?) : String = if (a == null) "" else " by ${a.name} @${a.username}"
 
 fun org.gitlab4j.api.models.Issue.makeResponse(
     groupTypeName: String,
@@ -17,7 +18,7 @@ fun org.gitlab4j.api.models.Issue.makeResponse(
 ) = Response(
     this.title ?: "",
     "$groupTypeName / $groupName / $projectName",
-    dateFormat.format(this.createdAt) + " by ${this.author.name}",
+    dateFormat.format(this.createdAt) + getAuthorName(this.author),
     this.webUrl?.makeUrl() ?: ""
 )
 
@@ -26,8 +27,7 @@ fun org.gitlab4j.api.models.MergeRequest.makeResponse(
     groupName: String,
     projectName: String
 ): Response {
-    val author = this.author?.name
-    val created = dateFormat.format(this.createdAt) + if (author == null) "" else " by $author"
+    val created = dateFormat.format(this.createdAt) + getAuthorName(this.author)
     val fromBranch = this.sourceBranch
     val toBranch = this.targetBranch
     val merge = if (fromBranch == null || toBranch == null) "" else "/ $fromBranch -> $toBranch"
@@ -52,8 +52,7 @@ fun org.gitlab4j.api.models.SearchBlob.makeResponse(
 )
 
 fun org.gitlab4j.api.models.Commit.makeResponse(): Response {
-    val author = this.author?.name
-    val created = dateFormat.format(this.createdAt) + if (author == null) "" else " by $author"
+    val created = dateFormat.format(this.createdAt) + getAuthorName(this.author)
 
     return Response(
         this.title ?: "",
@@ -66,8 +65,7 @@ fun org.gitlab4j.api.models.Commit.makeResponse(): Response {
 fun org.gitlab4j.api.models.Note.makeResponse(
     noteableType: String
 ): Response {
-    val author = this.author?.name
-    val created = dateFormat.format(this.createdAt) + if (author == null) "" else " by $author"
+    val created = dateFormat.format(this.createdAt) + getAuthorName(this.author)
 
     return Response(
         this.body?.makeShorter() ?: "...",
