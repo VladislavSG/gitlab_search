@@ -25,7 +25,7 @@ public class SearchService {
     private final GitlabGetService getService;
     private GitLabApi gitLabApi;
     @Value("${gitlab.url}")
-    private String gitlabUrl = "http://localhost";
+    private String gitlabUrl;
 
     public SearchService(@Autowired GitlabGetService service) {
         this.getService = service;
