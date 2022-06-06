@@ -212,10 +212,11 @@
     </div>
     <div class="search-results w-75">
         <div class="scope issues">
+            
             <div class="list-group list-group-flush w-100">
                 <a th:href="${item.url}"
                    th:each="item : ${issuesList}"
-                   class="list-group-item flex-column justify-content  result">
+                   class="list-group-item flex-column justify-content result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -223,6 +224,7 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
             </div>
         </div>
         <div class="scope mergeRequests">
@@ -237,9 +239,11 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
             </div>
         </div>
         <div class="scope milestones">
+            
             <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${milestoneList}"
                    class="list-group-item flex-column justify-content  result">
@@ -250,9 +254,11 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
             </div>
         </div>
         <div class="scope users">
+            
             <div class="list-group list-group-flush w-100">
                 <a th:href="${item.url}"
                    th:each="item : ${userList}"
@@ -264,9 +270,11 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
             </div>
         </div>
         <div class="scope blobs">
+            
             <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${blobList}"
                    class="list-group-item flex-column justify-content  result">
@@ -277,9 +285,11 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
             </div>
         </div>
         <div class="scope commits">
+            
             <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${commitList}"
                    th:href="${item.url}"
@@ -291,6 +301,7 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
             </div>
         </div>
         <div class="scope wiki">
@@ -305,12 +316,14 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
+                
             </div>
         </div>
         <div class="scope comments">
             <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${commentList}"
-                   class="list-group-item flex-column justify-content  result">
+                   class="list-group-item flex-column justify-content result">
                     <div class="d-flex w-100 h justify-content-between">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
@@ -318,6 +331,7 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
+                
             </div>
         </div>
     </div>
