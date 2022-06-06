@@ -235,7 +235,8 @@ public class SearchService {
         public List<?> searchInProjects() {
             updateProjects();
             if (searchScope == AllSearchScopes.BLOBS ||
-                    searchScope == AllSearchScopes.WIKI_BLOBS) {
+                searchScope == AllSearchScopes.WIKI_BLOBS ||
+                searchScope == AllSearchScopes.COMMITS) {
                 updateBranches();
                 return branches
                         .stream()
