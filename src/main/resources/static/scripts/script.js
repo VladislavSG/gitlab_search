@@ -172,7 +172,7 @@ function goUp(fromGroup = false) {
 function loadPage() {
     changeGroupType(false)
     changeMask(false)
-    chooseIssues()
+    chooseBlobs()
     groupTypeSelect.disabled = false
 }
 

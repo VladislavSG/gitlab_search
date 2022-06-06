@@ -4,17 +4,15 @@ import enhanced.search.dto.*
 import enhanced.search.service.GitlabGetService
 import enhanced.search.service.SearchService
 import enhanced.search.service.UserService
-import enhanced.search.utils.findById
-import enhanced.search.utils.getFullName
-import enhanced.search.utils.makeResponse
+import enhanced.search.utils.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import java.security.Principal
 import java.util.*
-import kotlin.concurrent.thread
 
 @Controller
 class SearchController(
@@ -22,6 +20,9 @@ class SearchController(
     @Autowired private val gitlabGetService: GitlabGetService,
     @Autowired private val searchService: SearchService
 ) {
+
+    @Value("\${gitlab.url}")
+    private val gitlabUrl = "http://localhost"
 
     @GetMapping("/")
     fun search(
@@ -50,6 +51,8 @@ class SearchController(
         val user = userService.search(principal.name)!!
         gitlabGetService.initToken(user.accessToken)
         searchService.initToken(user.accessToken)
+
+        SearchUtils.gitlabUrl = gitlabUrl
 
         val groupTypes = Collections.synchronizedList(gitlabGetService.groupTypes)
         val groups = Collections.synchronizedList(gitlabGetService.groups)
@@ -138,9 +141,7 @@ class SearchController(
         model.addAttribute("userList",
             searchService.searchUsers(gotRequest)
                 .map {
-                    it.makeResponse(
-                        it.location ?: ""
-                    )
+                    it.makeResponse()
                 })
 
         return "search-results"

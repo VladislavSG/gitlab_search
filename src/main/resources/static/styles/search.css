@@ -113,3 +113,9 @@ body {
     height: 75px;
     width: 700px;
 }
+
+.avatar{
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
+}

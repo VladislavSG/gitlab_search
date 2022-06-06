@@ -161,6 +161,12 @@
     <div class="search-scopes">
         <ul class="list-group list-group-horizontal">
             <li class="list-group-item scope-label"
+                onclick="chooseBlobs()"
+                id="blobs">
+                CODE <span class="badge badge-primary badge-pill"
+                           th:text="${blobList.size()}">[size]</span>
+            </li>
+            <li class="list-group-item scope-label"
                 id="issues"
                 onclick="chooseIssues()">
                 ISSUES <span class="badge badge-primary badge-pill"
@@ -179,10 +185,10 @@
                                  th:text="${milestoneList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
-                onclick="chooseUsers()"
-                id="users">
-                USERS <span class="badge badge-primary badge-pill"
-                            th:text="${userList.size()}">[size]</span>
+                onclick="chooseComments()"
+                id="comments">
+                COMMENTS <span class="badge badge-primary badge-pill"
+                               th:text="${commentList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
                 onclick="chooseWiki()"
@@ -191,28 +197,39 @@
                            th:text="${wikiList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
-                onclick="chooseBlobs()"
-                id="blobs">
-                BLOBS <span class="badge badge-primary badge-pill"
-                            th:text="${blobList.size()}">[size]</span>
-            </li>
-            <li class="list-group-item scope-label"
                 onclick="chooseCommits()"
                 id="commits">
                 COMMITS <span class="badge badge-primary badge-pill"
                               th:text="${commitList.size()}">[size]</span>
             </li>
             <li class="list-group-item scope-label"
-                onclick="chooseComments()"
-                id="comments">
-                COMMENTS <span class="badge badge-primary badge-pill"
-                               th:text="${commentList.size()}">[size]</span>
+                onclick="chooseUsers()"
+                id="users">
+                USERS <span class="badge badge-primary badge-pill"
+                            th:text="${userList.size()}">[size]</span>
             </li>
         </ul>
     </div>
     <div class="search-results w-75">
+        <div class="scope blobs">
+
+            <div class="list-group list-group-flush w-100">
+                <a th:href="${item.url}"
+                   th:each="item : ${blobList}"
+                   class="list-group-item flex-column justify-content result">
+                    <div class="d-flex w-100 h justify-content-between">
+                        <h6 class="mb-1"
+                            th:text="${item.title}">List group item heading</h6>
+                        <small th:text="${item.createdDate}">[date]</small>
+                    </div>
+                    <small th:text="${item.data}">[data]</small><br>
+                    <small th:text="${item.location}">[location]</small>
+                </a>
+
+            </div>
+        </div>
         <div class="scope issues">
-            
+
             <div class="list-group list-group-flush w-100">
                 <a th:href="${item.url}"
                    th:each="item : ${issuesList}"
@@ -222,9 +239,10 @@
                             th:text="${item.title}">List group item heading</h6>
                         <small th:text="${item.createdDate}">[date]</small>
                     </div>
+                    <small th:text="${item.data}">[data]</small><br>
                     <small th:text="${item.location}">[location]</small>
                 </a>
-                
+
             </div>
         </div>
         <div class="scope mergeRequests">
@@ -239,11 +257,11 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
-                
+
             </div>
         </div>
         <div class="scope milestones">
-            
+
             <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${milestoneList}"
                    class="list-group-item flex-column justify-content  result">
@@ -254,42 +272,27 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
-                
+
             </div>
         </div>
         <div class="scope users">
-            
+
             <div class="list-group list-group-flush w-100">
                 <a th:href="${item.url}"
                    th:each="item : ${userList}"
-                   class="list-group-item flex-column justify-content  result">
-                    <div class="d-flex w-100 h justify-content-between">
+                   class="list-group-item flex-column justify-content result">
+                    <div class="d-flex w-100 h">
+                        <img th:src="${item.imgSrc}" class="avatar">
                         <h6 class="mb-1"
                             th:text="${item.title}">List group item heading</h6>
                         <small th:text="${item.createdDate}">[date]</small>
                     </div>
-                    <small th:text="${item.location}">[location]</small>
                 </a>
-                
-            </div>
-        </div>
-        <div class="scope blobs">
-            
-            <div class="list-group list-group-flush w-100">
-                <a th:each="item : ${blobList}"
-                   class="list-group-item flex-column justify-content  result">
-                    <div class="d-flex w-100 h justify-content-between">
-                        <h6 class="mb-1"
-                            th:text="${item.title}">List group item heading</h6>
-                        <small th:text="${item.createdDate}">[date]</small>
-                    </div>
-                    <small th:text="${item.location}">[location]</small>
-                </a>
-                
+
             </div>
         </div>
         <div class="scope commits">
-            
+
             <div class="list-group list-group-flush w-100">
                 <a th:each="item : ${commitList}"
                    th:href="${item.url}"
@@ -301,7 +304,7 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
-                
+
             </div>
         </div>
         <div class="scope wiki">
@@ -316,8 +319,8 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
-                
-                
+
+
             </div>
         </div>
         <div class="scope comments">
@@ -331,7 +334,7 @@
                     </div>
                     <small th:text="${item.location}">[location]</small>
                 </a>
-                
+
             </div>
         </div>
     </div>
