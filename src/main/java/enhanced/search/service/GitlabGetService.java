@@ -94,14 +94,18 @@ public class GitlabGetService {
         return res;
     }
 
+    List<Branch> getBranches(final Long projectId) throws GitLabApiException {
+        return gitLabApi
+                .getRepositoryApi()
+                .getBranchesStream(projectId)
+                .map(b -> new Branch(b.getName(), projectId))
+                .toList();
+    }
+
     public List<Branch> getBranches(final SearchRequest request) throws GitLabApiException {
         long projectId = request.getProjectId();
         if (projectId != -1L) {
-            return gitLabApi
-                    .getRepositoryApi()
-                    .getBranchesStream(projectId)
-                    .map(b -> new Branch(b.getName(), projectId))
-                    .toList();
+            return getBranches(projectId);
         } else {
             return Collections.emptyList();
         }

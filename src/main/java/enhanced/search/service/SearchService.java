@@ -7,7 +7,6 @@ import enhanced.search.utils.ScopeType;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.*;
-import org.glassfish.jersey.internal.guava.Predicates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,12 @@ import java.util.stream.Stream;
 
 @Service
 public class SearchService {
-    private GitLabApi gitLabApi;
     private final GitlabGetService getService;
-
+    private GitLabApi gitLabApi;
     @Value("${gitlab.url}")
     private String gitlabUrl = "http://localhost";
 
-    public SearchService(@Autowired GitlabGetService service){
+    public SearchService(@Autowired GitlabGetService service) {
         this.getService = service;
     }
 
@@ -56,7 +54,8 @@ public class SearchService {
                             .filter(mask.asPredicate())
                             .collect(Collectors.toSet());
                 }
-            } catch (PatternSyntaxException ignored) {}
+            } catch (PatternSyntaxException ignored) {
+            }
             return res;
         } catch (GitLabApiException ignored) {
         }
@@ -88,17 +87,11 @@ public class SearchService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<SearchBlob> searchBlobs(SearchRequest request, AllSearchScopes scope) {
-        List<SearchBlob> result = (List<SearchBlob>) search(
+    private List<SearchBlob> searchBlobs(SearchRequest request, AllSearchScopes scope) {
+        return (List<SearchBlob>) search(
                 request,
                 scope
         );
-        return result
-                .stream()
-                .filter(Predicates.compose(
-                        getBranches(request)::contains,
-                        SearchBlob::getRef))
-                .toList();
     }
 
     public List<SearchBlob> searchBlobs(SearchRequest request) {
@@ -178,6 +171,7 @@ public class SearchService {
         private final Set<String> groupTypes;
         private List<Long> groupsId;
         private List<Long> projectsId;
+        private List<enhanced.search.dto.Branch> branches;
 
         public SearchState(final SearchRequest request, final AllSearchScopes scope) {
             this.request = request.getSearchString();
@@ -188,6 +182,13 @@ public class SearchService {
             this.groupsId = groupId == -1L ? null : List.of(groupId);
             long projectId = request.getProjectId();
             this.projectsId = projectId == -1L ? null : List.of(projectId);
+            if (!request.getBranches().isEmpty()) {
+                this.branches = request
+                        .getBranches()
+                        .stream()
+                        .map(enhanced.search.dto.Branch.Companion::parse)
+                        .toList();
+            }
         }
 
         public List<?> searchInGlobal() {
@@ -233,21 +234,35 @@ public class SearchService {
 
         public List<?> searchInProjects() {
             updateProjects();
-            return projectsId
-                    .stream()
-                    .map(this::searchInProjects)
-                    .flatMap(Collection::stream)
-                    .toList();
+            if (searchScope == AllSearchScopes.BLOBS ||
+                    searchScope == AllSearchScopes.WIKI_BLOBS) {
+                updateBranches();
+                return branches
+                        .stream()
+                        .flatMap(b -> searchInProjects(b.getParentId(), b.getName()).stream())
+                        .toList();
+            } else {
+                return projectsId
+                        .stream()
+                        .map(this::searchInProjects)
+                        .flatMap(Collection::stream)
+                        .toList();
+            }
         }
 
         private List<?> searchInProjects(Object id) {
+            return searchInProjects(id, null);
+        }
+
+        private List<?> searchInProjects(Object id, String ref) {
             try {
                 return gitLabApi
                         .getSearchApi()
                         .projectSearch(
                                 id,
                                 searchScope.getProjectScope(),
-                                request
+                                request,
+                                ref
                         );
             } catch (GitLabApiException e) {
                 throw new GitlabRuntimeException(e);
@@ -288,6 +303,23 @@ public class SearchService {
                             }
                         })
                         .map(Project::getId)
+                        .toList();
+            }
+        }
+
+        private void updateBranches() {
+            if (branches == null) {
+                branches = projectsId
+                        .stream()
+                        .flatMap(id -> {
+                            try {
+                                return getService
+                                        .getBranches(id)
+                                        .stream();
+                            } catch (GitLabApiException e) {
+                                throw new GitlabRuntimeException(e);
+                            }
+                        })
                         .toList();
             }
         }

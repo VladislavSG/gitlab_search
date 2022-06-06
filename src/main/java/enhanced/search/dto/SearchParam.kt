@@ -25,6 +25,12 @@ data class Branch(
     override fun toString(): String {
         return "$name $parentId"
     }
+    companion object {
+        fun parse(fullname : String) : Branch {
+            val words : List<String> = fullname.split(" ")
+            return Branch(words[0], words[1].toLong())
+        }
+    }
 }
 
 val ANY_GROUP_TYPE = GroupType(-1, "Any Group Type")
