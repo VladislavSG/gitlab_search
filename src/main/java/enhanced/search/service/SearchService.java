@@ -67,22 +67,23 @@ public class SearchService {
             return Collections.EMPTY_LIST;
         }
         final SearchState ss = new SearchState(request, scope);
-        try {
-            for (ScopeType st = request.getScope(); st != null; st = st.next()) {
-                try {
-                    return switch (st) {
-                        case GLOBAL -> ss.searchInGlobal();
-                        case GROUP_TYPE -> ss.searchInGroupTypes();
-                        case GROUP -> ss.searchInGroups();
-                        case PROJECT -> ss.searchInProjects();
-                    };
-                } catch (UnsupportedOperationException ignored) {
+        for (ScopeType st = request.getScope(); st != null; st = st.next()) {
+            try {
+                return switch (st) {
+                    case GLOBAL -> ss.searchInGlobal();
+                    case GROUP_TYPE -> ss.searchInGroupTypes();
+                    case GROUP -> ss.searchInGroups();
+                    case PROJECT -> ss.searchInProjects();
+                };
+            } catch (UnsupportedOperationException ignored) {
+            } catch (GitlabRuntimeException e) {
+                final Throwable cause = e.getCause();
+                if (!(cause instanceof GitLabApiException) ||
+                    ((GitLabApiException)cause).getHttpStatus() != 400) {
+                    break;
                 }
             }
-        } catch (GitlabRuntimeException ignored) {
         }
-        // return EMPTY_LIST on fail. Some Gitlab api search requests can throw GitlabApiException
-        // even when used correctly. For example search blobs in CE version.
         return Collections.EMPTY_LIST;
     }
 
@@ -205,7 +206,6 @@ public class SearchService {
         }
 
         public List<?> searchInGroupTypes() {
-            updateGroups();
             return searchInGroups();
         }
 
@@ -292,6 +292,7 @@ public class SearchService {
 
         private void updateProjects() {
             if (projectsId == null) {
+                updateGroups();
                 projectsId = groupsId
                         .stream()
                         .flatMap(id -> {
@@ -310,6 +311,7 @@ public class SearchService {
 
         private void updateBranches() {
             if (branches == null) {
+                updateProjects();
                 branches = projectsId
                         .stream()
                         .flatMap(id -> {
