@@ -43,12 +43,12 @@ tasks.named('test') {
 }
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "16"
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "16"
     }
 }
 targetCompatibility = JavaVersion.VERSION_16
